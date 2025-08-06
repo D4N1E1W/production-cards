@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>CG Production - Live Cards</title>
+    <title>CG Production - Professional Cards</title>
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#fd0786">
     
@@ -22,9 +22,12 @@
             --cg-pink-light: #ff4b9f;
             --cg-blue: #4A90E2;
             --cg-green: #28a745;
+            --cg-yellow: #ffc107;
+            --cg-red: #dc3545;
             --text-dark: #212529;
             --text-muted: #6c757d;
             --gray-light: #f8f9fa;
+            --gray-border: #e9ecef;
             --shadow: 0 2px 12px rgba(0,0,0,0.08);
         }
         
@@ -34,9 +37,76 @@
             min-height: 100vh;
         }
         
+        /* Login Screen */
+        .login-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            color: white;
+            text-align: center;
+        }
+        
+        .login-screen.active {
+            display: flex;
+        }
+        
+        .login-box {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .login-logo {
+            font-size: 36px;
+            font-weight: bold;
+            color: var(--cg-pink);
+            margin-bottom: 20px;
+        }
+        
+        .login-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid var(--gray-border);
+            border-radius: 10px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+        
+        .login-input:focus {
+            outline: none;
+            border-color: var(--cg-pink);
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--cg-pink) 0%, var(--cg-pink-light) 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .login-error {
+            color: var(--cg-red);
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
+        }
+        
         /* Landing Page */
         .landing-page {
-            display: flex;
+            display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
@@ -46,8 +116,8 @@
             color: white;
         }
         
-        .landing-page.hidden {
-            display: none;
+        .landing-page.active {
+            display: flex;
         }
         
         .logo {
@@ -68,18 +138,50 @@
             border-radius: 20px;
             padding: 30px;
             width: 100%;
-            max-width: 400px;
+            max-width: 500px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .selector-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
         }
         
         .selector-title {
             color: var(--text-dark);
             font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .filter-tabs {
+            display: flex;
+            gap: 10px;
             margin-bottom: 20px;
+        }
+        
+        .filter-tab {
+            flex: 1;
+            padding: 10px;
+            background: var(--gray-light);
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .filter-tab.active {
+            background: var(--cg-pink);
+            color: white;
         }
         
         .production-list {
             margin-bottom: 20px;
+            max-height: 400px;
+            overflow-y: auto;
         }
         
         .production-item {
@@ -92,6 +194,7 @@
             margin-bottom: 10px;
             cursor: pointer;
             transition: all 0.2s;
+            position: relative;
         }
         
         .production-item:hover {
@@ -99,14 +202,40 @@
             background: #e9ecef;
         }
         
+        .production-item.archived {
+            opacity: 0.6;
+        }
+        
+        .production-info {
+            flex: 1;
+            text-align: left;
+        }
+        
         .production-name {
             color: var(--text-dark);
             font-weight: 600;
+            margin-bottom: 4px;
         }
         
-        .production-date {
+        .production-meta {
+            display: flex;
+            gap: 10px;
+            font-size: 12px;
             color: var(--text-muted);
-            font-size: 14px;
+        }
+        
+        .production-stats {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .stat-badge {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            background: white;
+            color: var(--text-dark);
         }
         
         .btn-new {
@@ -122,11 +251,6 @@
             transition: all 0.3s;
         }
         
-        .btn-new:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(253, 7, 134, 0.4);
-        }
-        
         /* Main App */
         .app-container {
             display: none;
@@ -136,16 +260,17 @@
             display: block;
         }
         
+        /* Header */
         .header {
             background: white;
-            padding: 15px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             position: sticky;
             top: 0;
             z-index: 100;
         }
         
-        .header-content {
+        .header-top {
+            padding: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -173,12 +298,53 @@
             justify-content: center;
             cursor: pointer;
             font-size: 18px;
+            position: relative;
+        }
+        
+        .btn-icon.active {
+            background: var(--cg-pink);
+            color: white;
+        }
+        
+        .edit-indicator {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 10px;
+            height: 10px;
+            background: var(--cg-green);
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+        
+        .header-info {
+            padding: 0 15px 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        .mode-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+        
+        .mode-badge.view {
+            background: var(--gray-light);
+            color: var(--text-muted);
+        }
+        
+        .mode-badge.edit {
+            background: var(--cg-yellow);
+            color: var(--text-dark);
         }
         
         .beat-progress {
             background: var(--gray-light);
             height: 4px;
-            margin-top: 10px;
         }
         
         .beat-progress-bar {
@@ -200,6 +366,16 @@
             margin-bottom: 15px;
             box-shadow: var(--shadow);
             overflow: hidden;
+            transition: all 0.2s;
+        }
+        
+        .beat-card.completed {
+            opacity: 0.8;
+        }
+        
+        .beat-card.editing {
+            box-shadow: 0 4px 20px rgba(253, 7, 134, 0.2);
+            transform: scale(1.01);
         }
         
         .beat-header {
@@ -212,29 +388,51 @@
             align-items: center;
         }
         
+        .beat-header.completed {
+            background: linear-gradient(135deg, var(--cg-green) 0%, #5cb85c 100%);
+        }
+        
+        .beat-info {
+            flex: 1;
+        }
+        
         .beat-number {
             font-size: 16px;
             font-weight: bold;
+            margin-bottom: 4px;
+        }
+        
+        .beat-assigned {
+            font-size: 12px;
+            opacity: 0.9;
         }
         
         .beat-status {
             display: flex;
             gap: 8px;
+            align-items: center;
         }
         
         .status-icon {
-            width: 24px;
-            height: 24px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             background: rgba(255,255,255,0.3);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .status-icon:hover {
+            background: rgba(255,255,255,0.5);
         }
         
         .status-icon.complete {
-            background: var(--cg-green);
+            background: white;
+            color: var(--cg-green);
         }
         
         .beat-content {
@@ -257,23 +455,55 @@
             color: var(--text-muted);
             margin-bottom: 8px;
             font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .field-meta {
+            font-size: 10px;
+            color: var(--cg-blue);
         }
         
         .field-content {
             background: var(--gray-light);
-            padding: 10px;
+            padding: 12px;
             border-radius: 8px;
             min-height: 50px;
             white-space: pre-wrap;
+            line-height: 1.5;
+            font-size: 14px;
         }
         
-        .field-content[contenteditable="true"] {
+        .field-content.editable {
             cursor: text;
+            border: 2px solid transparent;
+            transition: all 0.2s;
         }
         
-        .field-content[contenteditable="true"]:focus {
-            outline: 2px solid var(--cg-pink);
+        .field-content.editable:hover {
             background: white;
+            border-color: var(--gray-border);
+        }
+        
+        .field-content.editable:focus {
+            outline: none;
+            background: white;
+            border-color: var(--cg-pink);
+        }
+        
+        /* Props with Progress */
+        .props-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .props-progress {
+            font-size: 12px;
+            color: var(--cg-green);
+            font-weight: 600;
         }
         
         .props-list {
@@ -286,24 +516,72 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 8px;
+            padding: 10px;
             background: var(--gray-light);
             border-radius: 8px;
+            transition: all 0.2s;
+        }
+        
+        .prop-item.checked {
+            background: #d4edda;
         }
         
         .prop-checkbox {
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
             border: 2px solid var(--cg-pink);
             border-radius: 4px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.2s;
         }
         
         .prop-checkbox.checked {
             background: var(--cg-pink);
+            color: white;
+        }
+        
+        .prop-text {
+            flex: 1;
+            font-size: 14px;
+        }
+        
+        .prop-edit {
+            display: none;
+            padding: 4px 8px;
+            background: white;
+            border: 1px solid var(--gray-border);
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .edit-mode .prop-edit {
+            display: block;
+        }
+        
+        /* Team Assignment */
+        .team-section {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        
+        .team-member {
+            padding: 6px 12px;
+            background: var(--gray-light);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-dark);
+            cursor: pointer;
+        }
+        
+        .team-member.assigned {
+            background: var(--cg-blue);
             color: white;
         }
         
@@ -330,6 +608,12 @@
             color: var(--text-dark);
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.15);
         }
         
         .btn-action.primary {
@@ -337,7 +621,12 @@
             color: white;
         }
         
-        /* Share Modal */
+        .btn-action.success {
+            background: var(--cg-green);
+            color: white;
+        }
+        
+        /* Modals */
         .modal {
             display: none;
             position: fixed;
@@ -361,15 +650,66 @@
             border-radius: 20px;
             padding: 30px;
             width: 100%;
-            max-width: 400px;
-            text-align: center;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
         }
         
         .modal-title {
             font-size: 20px;
             font-weight: bold;
             color: var(--text-dark);
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+        
+        .modal-body {
             margin-bottom: 20px;
+        }
+        
+        .share-options {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .share-option {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid var(--gray-border);
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .share-option.selected {
+            border-color: var(--cg-pink);
+            background: rgba(253, 7, 134, 0.05);
+        }
+        
+        .share-option-title {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+        
+        .share-option-desc {
+            font-size: 12px;
+            color: var(--text-muted);
         }
         
         .share-link {
@@ -380,10 +720,7 @@
             word-break: break-all;
             font-size: 14px;
             color: var(--text-dark);
-        }
-        
-        .qr-code {
-            margin: 20px 0;
+            font-family: monospace;
         }
         
         .modal-actions {
@@ -399,6 +736,7 @@
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
+            transition: all 0.2s;
         }
         
         .modal-btn.primary {
@@ -411,29 +749,97 @@
             color: var(--text-dark);
         }
         
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.9);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 14px;
+            z-index: 2000;
+            animation: slideUp 0.3s ease;
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translate(-50%, 100%);
+                opacity: 0;
+            }
+            to {
+                transform: translate(-50%, 0);
+                opacity: 1;
+            }
+        }
+        
+        /* Print Styles */
+        @media print {
+            .header-actions,
+            .quick-actions,
+            .btn-icon,
+            .prop-checkbox,
+            .team-section {
+                display: none !important;
+            }
+            
+            .beat-card {
+                page-break-inside: avoid;
+                margin-bottom: 20px;
+            }
+            
+            .beat-content {
+                display: block !important;
+            }
+        }
+        
         @media (min-width: 768px) {
             .production-selector {
-                max-width: 500px;
+                max-width: 600px;
             }
             
             .beats-container {
-                max-width: 600px;
+                max-width: 800px;
                 margin: 0 auto;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Login Screen (for protected productions) -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-box">
+            <div class="login-logo">CLEAN GIRL</div>
+            <p style="color: var(--text-muted); margin-bottom: 20px;">Enter access code</p>
+            <input type="text" class="login-input" id="accessCode" placeholder="••••" maxlength="4">
+            <button class="login-btn" onclick="checkAccess()">Access Production</button>
+            <div class="login-error" id="loginError">Invalid code</div>
+        </div>
+    </div>
+    
     <!-- Landing Page -->
-    <div class="landing-page" id="landingPage">
+    <div class="landing-page active" id="landingPage">
         <div class="logo">CLEAN GIRL</div>
         <div class="tagline">Production Cards</div>
         
         <div class="production-selector">
-            <div class="selector-title">Select Production</div>
+            <div class="selector-header">
+                <div class="selector-title">Productions</div>
+                <button class="btn-icon" onclick="showSettings()">⚙️</button>
+            </div>
+            
+            <div class="filter-tabs">
+                <button class="filter-tab active" onclick="filterProductions('active')">Active</button>
+                <button class="filter-tab" onclick="filterProductions('archived')">Archived</button>
+                <button class="filter-tab" onclick="filterProductions('all')">All</button>
+            </div>
+            
             <div class="production-list" id="productionList">
                 <!-- Productions will be listed here -->
             </div>
+            
             <button class="btn-new" onclick="createNewProduction()">+ Create New Production</button>
         </div>
     </div>
@@ -441,13 +847,22 @@
     <!-- Main App -->
     <div class="app-container" id="appContainer">
         <div class="header">
-            <div class="header-content">
+            <div class="header-top">
                 <div class="production-title" id="productionTitle">Production</div>
                 <div class="header-actions">
+                    <button class="btn-icon" id="editToggle" onclick="toggleEditMode()">
+                        ✏️
+                        <span class="edit-indicator" style="display: none;"></span>
+                    </button>
                     <button class="btn-icon" onclick="shareProduction()">🔗</button>
+                    <button class="btn-icon" onclick="printProduction()">🖨️</button>
                     <button class="btn-icon" onclick="exportData()">💾</button>
                     <button class="btn-icon" onclick="backToMenu()">🏠</button>
                 </div>
+            </div>
+            <div class="header-info">
+                <span class="mode-badge view" id="modeBadge">VIEW MODE</span>
+                <span id="lastSaved">Last saved: Just now</span>
             </div>
             <div class="beat-progress">
                 <div class="beat-progress-bar" id="progressBar"></div>
@@ -459,21 +874,38 @@
         </div>
         
         <div class="quick-actions">
-            <button class="btn-action" onclick="addBeat()">+ Add Beat</button>
+            <button class="btn-action" id="addBeatBtn" onclick="addBeat()" style="display: none;">+ Beat</button>
             <button class="btn-action primary" onclick="markCurrentComplete()">✓ Complete</button>
-            <button class="btn-action" onclick="saveProduction()">💾 Save</button>
+            <button class="btn-action" onclick="quickSave()">💾 Save</button>
         </div>
     </div>
     
     <!-- Share Modal -->
     <div class="modal" id="shareModal">
         <div class="modal-content">
-            <div class="modal-title">Share Production</div>
-            <div class="share-link" id="shareLink"></div>
-            <div class="qr-code" id="qrCode"></div>
+            <div class="modal-header">
+                <div class="modal-title">Share Production</div>
+                <button class="modal-close" onclick="closeModal('shareModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="share-options">
+                    <div class="share-option selected" onclick="selectShareType('view')">
+                        <div class="share-option-title">View Only</div>
+                        <div class="share-option-desc">Team can view but not edit</div>
+                    </div>
+                    <div class="share-option" onclick="selectShareType('edit')">
+                        <div class="share-option-title">Can Edit</div>
+                        <div class="share-option-desc">Team can make changes</div>
+                    </div>
+                </div>
+                <div class="share-link" id="shareLink"></div>
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <canvas id="qrCode" style="max-width: 200px;"></canvas>
+                </div>
+            </div>
             <div class="modal-actions">
                 <button class="modal-btn primary" onclick="copyShareLink()">Copy Link</button>
-                <button class="modal-btn secondary" onclick="closeModal()">Close</button>
+                <button class="modal-btn secondary" onclick="closeModal('shareModal')">Close</button>
             </div>
         </div>
     </div>
@@ -483,49 +915,135 @@
         let currentProduction = null;
         let productions = JSON.parse(localStorage.getItem('cg_productions') || '{}');
         let currentBeatIndex = 0;
+        let editMode = false;
+        let shareType = 'view';
+        let currentFilter = 'active';
+        
+        // Team members (can be customized)
+        const teamMembers = ['Director', 'DP', 'Producer', 'AD', 'Gaffer', 'Sound'];
         
         // Initialize
         window.addEventListener('load', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const prodId = urlParams.get('prod');
+            const mode = urlParams.get('mode');
+            const code = urlParams.get('code');
             
-            if (prodId && productions[prodId]) {
-                loadProduction(prodId);
+            if (prodId) {
+                if (productions[prodId]) {
+                    // Check if production is protected
+                    if (productions[prodId].protected && !code) {
+                        showLoginScreen(prodId);
+                    } else {
+                        loadProduction(prodId, mode === 'edit');
+                    }
+                } else {
+                    // Production doesn't exist locally, might be shared
+                    showToast('Loading shared production...');
+                    // In real app, would fetch from server
+                    showLandingPage();
+                }
             } else {
                 showLandingPage();
             }
         });
         
+        // Show login screen
+        function showLoginScreen(prodId) {
+            document.getElementById('loginScreen').classList.add('active');
+            document.getElementById('landingPage').classList.remove('active');
+            document.getElementById('loginScreen').dataset.prodId = prodId;
+        }
+        
+        // Check access code
+        function checkAccess() {
+            const code = document.getElementById('accessCode').value;
+            const prodId = document.getElementById('loginScreen').dataset.prodId;
+            const production = productions[prodId];
+            
+            if (production && production.accessCode === code) {
+                document.getElementById('loginScreen').classList.remove('active');
+                loadProduction(prodId, true);
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('loginError').style.display = 'none';
+                }, 3000);
+            }
+        }
+        
         // Show landing page with saved productions
         function showLandingPage() {
             const landingPage = document.getElementById('landingPage');
             const appContainer = document.getElementById('appContainer');
-            const productionList = document.getElementById('productionList');
+            const loginScreen = document.getElementById('loginScreen');
             
-            landingPage.classList.remove('hidden');
+            landingPage.classList.add('active');
             appContainer.classList.remove('active');
+            loginScreen.classList.remove('active');
             
-            // Clear and populate production list
+            renderProductionList();
+        }
+        
+        // Render production list
+        function renderProductionList() {
+            const productionList = document.getElementById('productionList');
             productionList.innerHTML = '';
             
-            Object.keys(productions).forEach(id => {
-                const prod = productions[id];
+            let filteredProductions = Object.entries(productions).filter(([id, prod]) => {
+                if (currentFilter === 'active') return !prod.archived;
+                if (currentFilter === 'archived') return prod.archived;
+                return true;
+            });
+            
+            if (filteredProductions.length === 0) {
+                productionList.innerHTML = '<div style="color: #6c757d; padding: 40px; text-align: center;">No productions yet</div>';
+                return;
+            }
+            
+            filteredProductions.forEach(([id, prod]) => {
+                const completed = prod.beats?.filter(b => b.completed).length || 0;
+                const total = prod.beats?.length || 0;
+                const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+                
                 const item = document.createElement('div');
-                item.className = 'production-item';
-                item.onclick = () => loadProduction(id);
+                item.className = 'production-item' + (prod.archived ? ' archived' : '');
+                item.onclick = () => {
+                    if (prod.protected) {
+                        showLoginScreen(id);
+                    } else {
+                        loadProduction(id);
+                    }
+                };
+                
                 item.innerHTML = `
-                    <div>
-                        <div class="production-name">${prod.title}</div>
-                        <div class="production-date">${prod.date || 'No date'}</div>
+                    <div class="production-info">
+                        <div class="production-name">
+                            ${prod.protected ? '🔒 ' : ''}${prod.title}
+                        </div>
+                        <div class="production-meta">
+                            <span>${prod.date || 'No date'}</span>
+                            <span>${total} beats</span>
+                        </div>
                     </div>
-                    <div>${prod.beats?.length || 0} beats</div>
+                    <div class="production-stats">
+                        <div class="stat-badge" style="background: ${percentage === 100 ? '#d4edda' : '#fff3cd'};">
+                            ${percentage}%
+                        </div>
+                    </div>
                 `;
                 productionList.appendChild(item);
             });
-            
-            if (Object.keys(productions).length === 0) {
-                productionList.innerHTML = '<div style="color: #6c757d; padding: 20px;">No productions yet</div>';
-            }
+        }
+        
+        // Filter productions
+        function filterProductions(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            renderProductionList();
         }
         
         // Create new production
@@ -533,48 +1051,117 @@
             const title = prompt('Production Title:');
             if (!title) return;
             
+            const isProtected = confirm('Protect with access code?');
+            let accessCode = null;
+            
+            if (isProtected) {
+                accessCode = prompt('Enter 4-digit access code:');
+                if (!accessCode || accessCode.length !== 4) {
+                    showToast('Invalid code. Production created without protection.');
+                    accessCode = null;
+                }
+            }
+            
             const id = title.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now();
             
             productions[id] = {
                 id: id,
                 title: title,
                 date: new Date().toISOString().split('T')[0],
+                protected: isProtected && accessCode,
+                accessCode: accessCode,
+                archived: false,
                 beats: [
                     {
                         number: 1,
                         title: 'INTRO',
-                        visual: 'Describe the shot...',
-                        audio: 'List audio elements...',
-                        production: 'Production notes...',
-                        edit: 'Edit notes...',
-                        props: ['Prop 1', 'Prop 2'],
-                        completed: false
+                        visual: '',
+                        audio: '',
+                        production: '',
+                        edit: '',
+                        props: [],
+                        propsChecked: {},
+                        completed: false,
+                        assigned: []
                     }
-                ]
+                ],
+                lastModified: new Date().toISOString()
             };
             
             localStorage.setItem('cg_productions', JSON.stringify(productions));
-            loadProduction(id);
+            loadProduction(id, true);
         }
         
         // Load production
-        function loadProduction(id) {
+        function loadProduction(id, allowEdit = false) {
             currentProduction = productions[id];
             if (!currentProduction) return;
             
+            // Check URL mode parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            const mode = urlParams.get('mode');
+            
+            // Only allow edit if explicitly permitted
+            editMode = allowEdit || mode === 'edit';
+            
             // Update URL
-            window.history.pushState({}, '', `?prod=${id}`);
+            const newUrl = `?prod=${id}${editMode ? '&mode=edit' : ''}`;
+            window.history.pushState({}, '', newUrl);
             
             // Show app
-            document.getElementById('landingPage').classList.add('hidden');
+            document.getElementById('landingPage').classList.remove('active');
+            document.getElementById('loginScreen').classList.remove('active');
             document.getElementById('appContainer').classList.add('active');
             
             // Set title
             document.getElementById('productionTitle').textContent = currentProduction.title;
             
+            // Update UI for mode
+            updateModeUI();
+            
             // Load beats
             renderBeats();
             updateProgress();
+        }
+        
+        // Toggle edit mode
+        function toggleEditMode() {
+            editMode = !editMode;
+            updateModeUI();
+            renderBeats();
+            
+            // Update URL
+            const urlParams = new URLSearchParams(window.location.search);
+            if (editMode) {
+                urlParams.set('mode', 'edit');
+            } else {
+                urlParams.delete('mode');
+            }
+            window.history.pushState({}, '', '?' + urlParams.toString());
+        }
+        
+        // Update mode UI
+        function updateModeUI() {
+            const modeBadge = document.getElementById('modeBadge');
+            const editToggle = document.getElementById('editToggle');
+            const editIndicator = editToggle.querySelector('.edit-indicator');
+            const addBeatBtn = document.getElementById('addBeatBtn');
+            
+            if (editMode) {
+                modeBadge.textContent = 'EDIT MODE';
+                modeBadge.className = 'mode-badge edit';
+                editToggle.classList.add('active');
+                editIndicator.style.display = 'block';
+                addBeatBtn.style.display = 'block';
+                document.body.classList.add('edit-mode');
+            } else {
+                modeBadge.textContent = 'VIEW MODE';
+                modeBadge.className = 'mode-badge view';
+                editToggle.classList.remove('active');
+                editIndicator.style.display = 'none';
+                addBeatBtn.style.display = 'none';
+                document.body.classList.remove('edit-mode');
+            }
         }
         
         // Render beats
@@ -584,10 +1171,22 @@
             
             currentProduction.beats.forEach((beat, index) => {
                 const beatCard = document.createElement('div');
-                beatCard.className = 'beat-card' + (index === 0 ? ' expanded' : '');
+                beatCard.className = 'beat-card' + 
+                    (index === 0 ? ' expanded' : '') +
+                    (beat.completed ? ' completed' : '') +
+                    (editMode ? ' editing' : '');
+                
+                const propsCompleted = Object.values(beat.propsChecked || {}).filter(checked => checked).length;
+                const propsTotal = beat.props?.length || 0;
+                
                 beatCard.innerHTML = `
-                    <div class="beat-header" onclick="toggleBeat(${index})">
-                        <div class="beat-number">Beat ${beat.number}: ${beat.title || ''}</div>
+                    <div class="beat-header ${beat.completed ? 'completed' : ''}" onclick="toggleBeat(${index})">
+                        <div class="beat-info">
+                            <div class="beat-number">Beat ${beat.number}: ${beat.title || 'Untitled'}</div>
+                            ${beat.assigned?.length ? `
+                                <div class="beat-assigned">Assigned: ${beat.assigned.join(', ')}</div>
+                            ` : ''}
+                        </div>
                         <div class="beat-status">
                             <div class="status-icon ${beat.completed ? 'complete' : ''}" onclick="toggleComplete(event, ${index})">
                                 ${beat.completed ? '✓' : ''}
@@ -596,34 +1195,84 @@
                     </div>
                     <div class="beat-content">
                         <div class="field-group">
-                            <div class="field-label">TITLE</div>
-                            <div class="field-content" contenteditable="true" data-beat="${index}" data-field="title">${beat.title || ''}</div>
+                            <div class="field-label">
+                                TITLE
+                                ${beat.lastModified ? `<span class="field-meta">Modified ${formatTime(beat.lastModified)}</span>` : ''}
+                            </div>
+                            <div class="field-content ${editMode ? 'editable' : ''}" 
+                                 ${editMode ? 'contenteditable="true"' : ''} 
+                                 data-beat="${index}" 
+                                 data-field="title">${beat.title || ''}</div>
                         </div>
+                        
                         <div class="field-group">
                             <div class="field-label">VISUAL (EYES)</div>
-                            <div class="field-content" contenteditable="true" data-beat="${index}" data-field="visual">${beat.visual || ''}</div>
+                            <div class="field-content ${editMode ? 'editable' : ''}" 
+                                 ${editMode ? 'contenteditable="true"' : ''} 
+                                 data-beat="${index}" 
+                                 data-field="visual">${beat.visual || ''}</div>
                         </div>
+                        
                         <div class="field-group">
                             <div class="field-label">AUDIO (EARS)</div>
-                            <div class="field-content" contenteditable="true" data-beat="${index}" data-field="audio">${beat.audio || ''}</div>
+                            <div class="field-content ${editMode ? 'editable' : ''}" 
+                                 ${editMode ? 'contenteditable="true"' : ''} 
+                                 data-beat="${index}" 
+                                 data-field="audio">${beat.audio || ''}</div>
                         </div>
+                        
                         <div class="field-group">
                             <div class="field-label">PRODUCTION NOTES</div>
-                            <div class="field-content" contenteditable="true" data-beat="${index}" data-field="production">${beat.production || ''}</div>
+                            <div class="field-content ${editMode ? 'editable' : ''}" 
+                                 ${editMode ? 'contenteditable="true"' : ''} 
+                                 data-beat="${index}" 
+                                 data-field="production">${beat.production || ''}</div>
                         </div>
+                        
                         <div class="field-group">
                             <div class="field-label">EDIT NOTES</div>
-                            <div class="field-content" contenteditable="true" data-beat="${index}" data-field="edit">${beat.edit || ''}</div>
+                            <div class="field-content ${editMode ? 'editable' : ''}" 
+                                 ${editMode ? 'contenteditable="true"' : ''} 
+                                 data-beat="${index}" 
+                                 data-field="edit">${beat.edit || ''}</div>
                         </div>
+                        
                         <div class="field-group">
-                            <div class="field-label">PROPS CHECKLIST</div>
+                            <div class="field-label">
+                                PROPS CHECKLIST
+                                ${propsTotal > 0 ? `
+                                    <span class="props-progress">${propsCompleted}/${propsTotal} ready</span>
+                                ` : ''}
+                            </div>
                             <div class="props-list">
+                                ${editMode ? `
+                                    <button class="btn-action" onclick="addProp(${index})" style="margin-bottom: 10px;">
+                                        + Add Prop
+                                    </button>
+                                ` : ''}
                                 ${(beat.props || []).map((prop, i) => `
-                                    <div class="prop-item">
-                                        <div class="prop-checkbox ${beat.propsChecked?.[i] ? 'checked' : ''}" onclick="toggleProp(${index}, ${i})">
+                                    <div class="prop-item ${beat.propsChecked?.[i] ? 'checked' : ''}">
+                                        <div class="prop-checkbox ${beat.propsChecked?.[i] ? 'checked' : ''}" 
+                                             onclick="toggleProp(${index}, ${i})">
                                             ${beat.propsChecked?.[i] ? '✓' : ''}
                                         </div>
-                                        <div>${prop}</div>
+                                        <div class="prop-text">${prop}</div>
+                                        ${editMode ? `
+                                            <button class="prop-edit" onclick="editProp(${index}, ${i})">✏️</button>
+                                            <button class="prop-edit" onclick="removeProp(${index}, ${i})">🗑️</button>
+                                        ` : ''}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        
+                        <div class="field-group">
+                            <div class="field-label">TEAM ASSIGNMENT</div>
+                            <div class="team-section">
+                                ${teamMembers.map(member => `
+                                    <div class="team-member ${beat.assigned?.includes(member) ? 'assigned' : ''}"
+                                         onclick="toggleTeamMember(${index}, '${member}')">
+                                        ${member}
                                     </div>
                                 `).join('')}
                             </div>
@@ -633,10 +1282,29 @@
                 container.appendChild(beatCard);
             });
             
-            // Add input listeners
-            document.querySelectorAll('.field-content[contenteditable]').forEach(field => {
-                field.addEventListener('blur', saveField);
-            });
+            // Add input listeners if in edit mode
+            if (editMode) {
+                document.querySelectorAll('.field-content[contenteditable]').forEach(field => {
+                    field.addEventListener('input', saveField);
+                    field.addEventListener('blur', () => {
+                        currentProduction.lastModified = new Date().toISOString();
+                        saveProduction();
+                    });
+                });
+            }
+        }
+        
+        // Format time
+        function formatTime(isoString) {
+            const date = new Date(isoString);
+            const now = new Date();
+            const diff = now - date;
+            const minutes = Math.floor(diff / 60000);
+            
+            if (minutes < 1) return 'just now';
+            if (minutes < 60) return `${minutes}m ago`;
+            if (minutes < 1440) return `${Math.floor(minutes / 60)}h ago`;
+            return date.toLocaleDateString();
         }
         
         // Toggle beat expansion
@@ -674,16 +1342,73 @@
             renderBeats();
         }
         
+        // Add prop
+        function addProp(beatIndex) {
+            const propName = prompt('Prop name:');
+            if (!propName) return;
+            
+            if (!currentProduction.beats[beatIndex].props) {
+                currentProduction.beats[beatIndex].props = [];
+            }
+            currentProduction.beats[beatIndex].props.push(propName);
+            saveProduction();
+            renderBeats();
+        }
+        
+        // Edit prop
+        function editProp(beatIndex, propIndex) {
+            const currentName = currentProduction.beats[beatIndex].props[propIndex];
+            const newName = prompt('Edit prop:', currentName);
+            if (newName && newName !== currentName) {
+                currentProduction.beats[beatIndex].props[propIndex] = newName;
+                saveProduction();
+                renderBeats();
+            }
+        }
+        
+        // Remove prop
+        function removeProp(beatIndex, propIndex) {
+            if (confirm('Remove this prop?')) {
+                currentProduction.beats[beatIndex].props.splice(propIndex, 1);
+                delete currentProduction.beats[beatIndex].propsChecked[propIndex];
+                saveProduction();
+                renderBeats();
+            }
+        }
+        
+        // Toggle team member
+        function toggleTeamMember(beatIndex, member) {
+            if (!editMode) return;
+            
+            if (!currentProduction.beats[beatIndex].assigned) {
+                currentProduction.beats[beatIndex].assigned = [];
+            }
+            
+            const assigned = currentProduction.beats[beatIndex].assigned;
+            const memberIndex = assigned.indexOf(member);
+            
+            if (memberIndex > -1) {
+                assigned.splice(memberIndex, 1);
+            } else {
+                assigned.push(member);
+            }
+            
+            saveProduction();
+            renderBeats();
+        }
+        
         // Save field content
         function saveField(event) {
             const beatIndex = parseInt(event.target.dataset.beat);
             const field = event.target.dataset.field;
             currentProduction.beats[beatIndex][field] = event.target.textContent;
-            saveProduction();
+            currentProduction.beats[beatIndex].lastModified = new Date().toISOString();
         }
         
         // Add new beat
         function addBeat() {
+            if (!editMode) return;
+            
             const newBeat = {
                 number: currentProduction.beats.length + 1,
                 title: '',
@@ -692,7 +1417,9 @@
                 production: '',
                 edit: '',
                 props: [],
-                completed: false
+                propsChecked: {},
+                completed: false,
+                assigned: []
             };
             currentProduction.beats.push(newBeat);
             saveProduction();
@@ -721,31 +1448,86 @@
         
         // Save production
         function saveProduction() {
+            currentProduction.lastModified = new Date().toISOString();
             productions[currentProduction.id] = currentProduction;
             localStorage.setItem('cg_productions', JSON.stringify(productions));
-            showToast('Saved!');
+            
+            // Update last saved time
+            document.getElementById('lastSaved').textContent = 'Last saved: Just now';
+        }
+        
+        // Quick save
+        function quickSave() {
+            saveProduction();
+            showToast('Production saved!');
         }
         
         // Share production
         function shareProduction() {
-            const shareUrl = `${window.location.origin}${window.location.pathname}?prod=${currentProduction.id}`;
+            const modal = document.getElementById('shareModal');
+            modal.classList.add('active');
+            updateShareLink();
+        }
+        
+        // Select share type
+        function selectShareType(type) {
+            shareType = type;
+            document.querySelectorAll('.share-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            event.target.closest('.share-option').classList.add('selected');
+            updateShareLink();
+        }
+        
+        // Update share link
+        function updateShareLink() {
+            const baseUrl = `${window.location.origin}${window.location.pathname}`;
+            const params = new URLSearchParams({
+                prod: currentProduction.id,
+                mode: shareType
+            });
+            
+            if (currentProduction.protected && shareType === 'edit') {
+                params.append('code', currentProduction.accessCode);
+            }
+            
+            const shareUrl = `${baseUrl}?${params.toString()}`;
             document.getElementById('shareLink').textContent = shareUrl;
             
-            // Generate QR code (using simple text placeholder)
-            document.getElementById('qrCode').innerHTML = `
-                <div style="padding: 20px; background: #f8f9fa; border-radius: 8px;">
-                    QR Code for:<br>${shareUrl}
-                </div>
-            `;
-            
-            document.getElementById('shareModal').classList.add('active');
+            // Generate simple QR placeholder
+            const canvas = document.getElementById('qrCode');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 200;
+            canvas.height = 200;
+            ctx.fillStyle = '#f8f9fa';
+            ctx.fillRect(0, 0, 200, 200);
+            ctx.fillStyle = '#212529';
+            ctx.font = '12px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('QR Code', 100, 95);
+            ctx.fillText('(Install library)', 100, 115);
         }
         
         // Copy share link
         function copyShareLink() {
             const shareUrl = document.getElementById('shareLink').textContent;
             navigator.clipboard.writeText(shareUrl);
-            showToast('Link copied!');
+            showToast('Link copied to clipboard!');
+        }
+        
+        // Print production
+        function printProduction() {
+            // Expand all beats for printing
+            document.querySelectorAll('.beat-card').forEach(card => {
+                card.classList.add('expanded');
+            });
+            
+            window.print();
+            
+            // Restore view after printing
+            setTimeout(() => {
+                renderBeats();
+            }, 100);
         }
         
         // Export data as JSON
@@ -759,6 +1541,8 @@
             document.body.appendChild(exportLink);
             exportLink.click();
             document.body.removeChild(exportLink);
+            
+            showToast('Production exported!');
         }
         
         // Back to menu
@@ -768,35 +1552,36 @@
         }
         
         // Close modal
-        function closeModal() {
-            document.getElementById('shareModal').classList.remove('active');
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
         }
         
         // Show toast notification
         function showToast(message) {
             const toast = document.createElement('div');
-            toast.style.cssText = `
-                position: fixed;
-                bottom: 100px;
-                left: 50%;
-                transform: translateX(-50%);
-                background: rgba(0,0,0,0.8);
-                color: white;
-                padding: 12px 20px;
-                border-radius: 20px;
-                font-size: 14px;
-                z-index: 2000;
-            `;
+            toast.className = 'toast';
             toast.textContent = message;
             document.body.appendChild(toast);
             
-            setTimeout(() => toast.remove(), 2000);
+            setTimeout(() => toast.remove(), 3000);
+        }
+        
+        // Show settings (placeholder)
+        function showSettings() {
+            showToast('Settings coming soon!');
         }
         
         // Register service worker for offline support
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js').catch(() => {});
         }
+        
+        // Auto-save
+        setInterval(() => {
+            if (currentProduction && editMode) {
+                saveProduction();
+            }
+        }, 30000); // Auto-save every 30 seconds
     </script>
 </body>
 </html>
