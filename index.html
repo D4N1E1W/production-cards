@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>CG Production - Live Cards</title>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#fd0786">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        :root {
+            --cg-pink: #fd0786;
+            --cg-pink-light: #ff4b9f;
+            --cg-blue: #4A90E2;
+            --cg-green: #28a745;
+            --text-dark: #212529;
+            --text-muted: #6c757d;
+            --gray-light: #f8f9fa;
+            --shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #fd0786 0%, #ff4b9f 100%);
+            min-height: 100vh;
+        }
+        
+        /* Landing Page */
+        .landing-page {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            text-align: center;
+            color: white;
+        }
+        
+        .landing-page.hidden {
+            display: none;
+        }
+        
+        .logo {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        
+        .tagline {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 40px;
+        }
+        
+        .production-selector {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .selector-title {
+            color: var(--text-dark);
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .production-list {
+            margin-bottom: 20px;
+        }
+        
+        .production-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: var(--gray-light);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .production-item:hover {
+            transform: translateX(5px);
+            background: #e9ecef;
+        }
+        
+        .production-name {
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+        
+        .production-date {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+        
+        .btn-new {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--cg-pink) 0%, var(--cg-pink-light) 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-new:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(253, 7, 134, 0.4);
+        }
+        
+        /* Main App */
+        .app-container {
+            display: none;
+        }
+        
+        .app-container.active {
+            display: block;
+        }
+        
+        .header {
+            background: white;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .production-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--cg-pink);
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn-icon {
+            background: var(--gray-light);
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        
+        .beat-progress {
+            background: var(--gray-light);
+            height: 4px;
+            margin-top: 10px;
+        }
+        
+        .beat-progress-bar {
+            background: var(--cg-green);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        /* Beat Cards */
+        .beats-container {
+            padding: 15px;
+            padding-bottom: 80px;
+        }
+        
+        .beat-card {
+            background: white;
+            border-radius: 16px;
+            margin-bottom: 15px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+        
+        .beat-header {
+            background: linear-gradient(135deg, var(--cg-pink) 0%, var(--cg-pink-light) 100%);
+            padding: 15px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .beat-number {
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        .beat-status {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .status-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        
+        .status-icon.complete {
+            background: var(--cg-green);
+        }
+        
+        .beat-content {
+            padding: 15px;
+            display: none;
+        }
+        
+        .beat-card.expanded .beat-content {
+            display: block;
+        }
+        
+        .field-group {
+            margin-bottom: 15px;
+        }
+        
+        .field-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .field-content {
+            background: var(--gray-light);
+            padding: 10px;
+            border-radius: 8px;
+            min-height: 50px;
+            white-space: pre-wrap;
+        }
+        
+        .field-content[contenteditable="true"] {
+            cursor: text;
+        }
+        
+        .field-content[contenteditable="true"]:focus {
+            outline: 2px solid var(--cg-pink);
+            background: white;
+        }
+        
+        .props-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .prop-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px;
+            background: var(--gray-light);
+            border-radius: 8px;
+        }
+        
+        .prop-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--cg-pink);
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .prop-checkbox.checked {
+            background: var(--cg-pink);
+            color: white;
+        }
+        
+        /* Quick Actions */
+        .quick-actions {
+            position: fixed;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            padding: 0 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 90;
+        }
+        
+        .btn-action {
+            flex: 1;
+            padding: 12px;
+            background: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            cursor: pointer;
+        }
+        
+        .btn-action.primary {
+            background: var(--cg-pink);
+            color: white;
+        }
+        
+        /* Share Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            padding: 20px;
+        }
+        
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+        }
+        
+        .share-link {
+            background: var(--gray-light);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            word-break: break-all;
+            font-size: 14px;
+            color: var(--text-dark);
+        }
+        
+        .qr-code {
+            margin: 20px 0;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .modal-btn.primary {
+            background: var(--cg-pink);
+            color: white;
+        }
+        
+        .modal-btn.secondary {
+            background: var(--gray-light);
+            color: var(--text-dark);
+        }
+        
+        @media (min-width: 768px) {
+            .production-selector {
+                max-width: 500px;
+            }
+            
+            .beats-container {
+                max-width: 600px;
+                margin: 0 auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Landing Page -->
+    <div class="landing-page" id="landingPage">
+        <div class="logo">CLEAN GIRL</div>
+        <div class="tagline">Production Cards</div>
+        
+        <div class="production-selector">
+            <div class="selector-title">Select Production</div>
+            <div class="production-list" id="productionList">
+                <!-- Productions will be listed here -->
+            </div>
+            <button class="btn-new" onclick="createNewProduction()">+ Create New Production</button>
+        </div>
+    </div>
+    
+    <!-- Main App -->
+    <div class="app-container" id="appContainer">
+        <div class="header">
+            <div class="header-content">
+                <div class="production-title" id="productionTitle">Production</div>
+                <div class="header-actions">
+                    <button class="btn-icon" onclick="shareProduction()">🔗</button>
+                    <button class="btn-icon" onclick="exportData()">💾</button>
+                    <button class="btn-icon" onclick="backToMenu()">🏠</button>
+                </div>
+            </div>
+            <div class="beat-progress">
+                <div class="beat-progress-bar" id="progressBar"></div>
+            </div>
+        </div>
+        
+        <div class="beats-container" id="beatsContainer">
+            <!-- Beats will be loaded here -->
+        </div>
+        
+        <div class="quick-actions">
+            <button class="btn-action" onclick="addBeat()">+ Add Beat</button>
+            <button class="btn-action primary" onclick="markCurrentComplete()">✓ Complete</button>
+            <button class="btn-action" onclick="saveProduction()">💾 Save</button>
+        </div>
+    </div>
+    
+    <!-- Share Modal -->
+    <div class="modal" id="shareModal">
+        <div class="modal-content">
+            <div class="modal-title">Share Production</div>
+            <div class="share-link" id="shareLink"></div>
+            <div class="qr-code" id="qrCode"></div>
+            <div class="modal-actions">
+                <button class="modal-btn primary" onclick="copyShareLink()">Copy Link</button>
+                <button class="modal-btn secondary" onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // App State
+        let currentProduction = null;
+        let productions = JSON.parse(localStorage.getItem('cg_productions') || '{}');
+        let currentBeatIndex = 0;
+        
+        // Initialize
+        window.addEventListener('load', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const prodId = urlParams.get('prod');
+            
+            if (prodId && productions[prodId]) {
+                loadProduction(prodId);
+            } else {
+                showLandingPage();
+            }
+        });
+        
+        // Show landing page with saved productions
+        function showLandingPage() {
+            const landingPage = document.getElementById('landingPage');
+            const appContainer = document.getElementById('appContainer');
+            const productionList = document.getElementById('productionList');
+            
+            landingPage.classList.remove('hidden');
+            appContainer.classList.remove('active');
+            
+            // Clear and populate production list
+            productionList.innerHTML = '';
+            
+            Object.keys(productions).forEach(id => {
+                const prod = productions[id];
+                const item = document.createElement('div');
+                item.className = 'production-item';
+                item.onclick = () => loadProduction(id);
+                item.innerHTML = `
+                    <div>
+                        <div class="production-name">${prod.title}</div>
+                        <div class="production-date">${prod.date || 'No date'}</div>
+                    </div>
+                    <div>${prod.beats?.length || 0} beats</div>
+                `;
+                productionList.appendChild(item);
+            });
+            
+            if (Object.keys(productions).length === 0) {
+                productionList.innerHTML = '<div style="color: #6c757d; padding: 20px;">No productions yet</div>';
+            }
+        }
+        
+        // Create new production
+        function createNewProduction() {
+            const title = prompt('Production Title:');
+            if (!title) return;
+            
+            const id = title.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now();
+            
+            productions[id] = {
+                id: id,
+                title: title,
+                date: new Date().toISOString().split('T')[0],
+                beats: [
+                    {
+                        number: 1,
+                        title: 'INTRO',
+                        visual: 'Describe the shot...',
+                        audio: 'List audio elements...',
+                        production: 'Production notes...',
+                        edit: 'Edit notes...',
+                        props: ['Prop 1', 'Prop 2'],
+                        completed: false
+                    }
+                ]
+            };
+            
+            localStorage.setItem('cg_productions', JSON.stringify(productions));
+            loadProduction(id);
+        }
+        
+        // Load production
+        function loadProduction(id) {
+            currentProduction = productions[id];
+            if (!currentProduction) return;
+            
+            // Update URL
+            window.history.pushState({}, '', `?prod=${id}`);
+            
+            // Show app
+            document.getElementById('landingPage').classList.add('hidden');
+            document.getElementById('appContainer').classList.add('active');
+            
+            // Set title
+            document.getElementById('productionTitle').textContent = currentProduction.title;
+            
+            // Load beats
+            renderBeats();
+            updateProgress();
+        }
+        
+        // Render beats
+        function renderBeats() {
+            const container = document.getElementById('beatsContainer');
+            container.innerHTML = '';
+            
+            currentProduction.beats.forEach((beat, index) => {
+                const beatCard = document.createElement('div');
+                beatCard.className = 'beat-card' + (index === 0 ? ' expanded' : '');
+                beatCard.innerHTML = `
+                    <div class="beat-header" onclick="toggleBeat(${index})">
+                        <div class="beat-number">Beat ${beat.number}: ${beat.title || ''}</div>
+                        <div class="beat-status">
+                            <div class="status-icon ${beat.completed ? 'complete' : ''}" onclick="toggleComplete(event, ${index})">
+                                ${beat.completed ? '✓' : ''}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="beat-content">
+                        <div class="field-group">
+                            <div class="field-label">TITLE</div>
+                            <div class="field-content" contenteditable="true" data-beat="${index}" data-field="title">${beat.title || ''}</div>
+                        </div>
+                        <div class="field-group">
+                            <div class="field-label">VISUAL (EYES)</div>
+                            <div class="field-content" contenteditable="true" data-beat="${index}" data-field="visual">${beat.visual || ''}</div>
+                        </div>
+                        <div class="field-group">
+                            <div class="field-label">AUDIO (EARS)</div>
+                            <div class="field-content" contenteditable="true" data-beat="${index}" data-field="audio">${beat.audio || ''}</div>
+                        </div>
+                        <div class="field-group">
+                            <div class="field-label">PRODUCTION NOTES</div>
+                            <div class="field-content" contenteditable="true" data-beat="${index}" data-field="production">${beat.production || ''}</div>
+                        </div>
+                        <div class="field-group">
+                            <div class="field-label">EDIT NOTES</div>
+                            <div class="field-content" contenteditable="true" data-beat="${index}" data-field="edit">${beat.edit || ''}</div>
+                        </div>
+                        <div class="field-group">
+                            <div class="field-label">PROPS CHECKLIST</div>
+                            <div class="props-list">
+                                ${(beat.props || []).map((prop, i) => `
+                                    <div class="prop-item">
+                                        <div class="prop-checkbox ${beat.propsChecked?.[i] ? 'checked' : ''}" onclick="toggleProp(${index}, ${i})">
+                                            ${beat.propsChecked?.[i] ? '✓' : ''}
+                                        </div>
+                                        <div>${prop}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(beatCard);
+            });
+            
+            // Add input listeners
+            document.querySelectorAll('.field-content[contenteditable]').forEach(field => {
+                field.addEventListener('blur', saveField);
+            });
+        }
+        
+        // Toggle beat expansion
+        function toggleBeat(index) {
+            const cards = document.querySelectorAll('.beat-card');
+            cards.forEach((card, i) => {
+                if (i === index) {
+                    card.classList.toggle('expanded');
+                    if (card.classList.contains('expanded')) {
+                        currentBeatIndex = index;
+                    }
+                } else {
+                    card.classList.remove('expanded');
+                }
+            });
+        }
+        
+        // Toggle beat complete
+        function toggleComplete(event, index) {
+            event.stopPropagation();
+            currentProduction.beats[index].completed = !currentProduction.beats[index].completed;
+            saveProduction();
+            renderBeats();
+            updateProgress();
+        }
+        
+        // Toggle prop checked
+        function toggleProp(beatIndex, propIndex) {
+            if (!currentProduction.beats[beatIndex].propsChecked) {
+                currentProduction.beats[beatIndex].propsChecked = {};
+            }
+            currentProduction.beats[beatIndex].propsChecked[propIndex] = 
+                !currentProduction.beats[beatIndex].propsChecked[propIndex];
+            saveProduction();
+            renderBeats();
+        }
+        
+        // Save field content
+        function saveField(event) {
+            const beatIndex = parseInt(event.target.dataset.beat);
+            const field = event.target.dataset.field;
+            currentProduction.beats[beatIndex][field] = event.target.textContent;
+            saveProduction();
+        }
+        
+        // Add new beat
+        function addBeat() {
+            const newBeat = {
+                number: currentProduction.beats.length + 1,
+                title: '',
+                visual: '',
+                audio: '',
+                production: '',
+                edit: '',
+                props: [],
+                completed: false
+            };
+            currentProduction.beats.push(newBeat);
+            saveProduction();
+            renderBeats();
+        }
+        
+        // Mark current beat complete
+        function markCurrentComplete() {
+            currentProduction.beats[currentBeatIndex].completed = true;
+            if (currentBeatIndex < currentProduction.beats.length - 1) {
+                currentBeatIndex++;
+            }
+            saveProduction();
+            renderBeats();
+            updateProgress();
+            toggleBeat(currentBeatIndex);
+        }
+        
+        // Update progress bar
+        function updateProgress() {
+            const completed = currentProduction.beats.filter(b => b.completed).length;
+            const total = currentProduction.beats.length;
+            const percentage = (completed / total) * 100;
+            document.getElementById('progressBar').style.width = percentage + '%';
+        }
+        
+        // Save production
+        function saveProduction() {
+            productions[currentProduction.id] = currentProduction;
+            localStorage.setItem('cg_productions', JSON.stringify(productions));
+            showToast('Saved!');
+        }
+        
+        // Share production
+        function shareProduction() {
+            const shareUrl = `${window.location.origin}${window.location.pathname}?prod=${currentProduction.id}`;
+            document.getElementById('shareLink').textContent = shareUrl;
+            
+            // Generate QR code (using simple text placeholder)
+            document.getElementById('qrCode').innerHTML = `
+                <div style="padding: 20px; background: #f8f9fa; border-radius: 8px;">
+                    QR Code for:<br>${shareUrl}
+                </div>
+            `;
+            
+            document.getElementById('shareModal').classList.add('active');
+        }
+        
+        // Copy share link
+        function copyShareLink() {
+            const shareUrl = document.getElementById('shareLink').textContent;
+            navigator.clipboard.writeText(shareUrl);
+            showToast('Link copied!');
+        }
+        
+        // Export data as JSON
+        function exportData() {
+            const dataStr = JSON.stringify(currentProduction, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportLink = document.createElement('a');
+            exportLink.setAttribute('href', dataUri);
+            exportLink.setAttribute('download', `${currentProduction.id}.json`);
+            document.body.appendChild(exportLink);
+            exportLink.click();
+            document.body.removeChild(exportLink);
+        }
+        
+        // Back to menu
+        function backToMenu() {
+            window.history.pushState({}, '', window.location.pathname);
+            showLandingPage();
+        }
+        
+        // Close modal
+        function closeModal() {
+            document.getElementById('shareModal').classList.remove('active');
+        }
+        
+        // Show toast notification
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 100px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: rgba(0,0,0,0.8);
+                color: white;
+                padding: 12px 20px;
+                border-radius: 20px;
+                font-size: 14px;
+                z-index: 2000;
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => toast.remove(), 2000);
+        }
+        
+        // Register service worker for offline support
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js').catch(() => {});
+        }
+    </script>
+</body>
+</html>
