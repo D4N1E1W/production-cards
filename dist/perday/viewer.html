@@ -1,0 +1,79 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Beat Cards Viewer</title>
+<style>
+  body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial; margin: 16px; }
+  .controls { display:flex; gap:8px; flex-wrap:wrap; margin-bottom: 12px; }
+  input, select { padding:6px 8px; }
+  .cards { display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:12px; }
+  .card { border:1px solid #e2e8f0; border-radius:8px; padding:12px; }
+  .title { font-weight:700; margin-bottom:4px; }
+  .small { color:#475569; font-size: 12px; }
+  .pill { border:1px solid #e2e8f0; border-radius:999px; padding:2px 8px; margin-right:6px; font-size:12px; color:#475569; }
+</style>
+</head>
+<body>
+<div class="controls">
+  <input id="q" placeholder="Search logline/scene…" />
+  <select id="day"><option value="">All Days</option></select>
+  <select id="status"><option value="">All Status</option></select>
+  <select id="location"><option value="">All Locations</option></select>
+</div>
+<div class="cards" id="cards"></div>
+<script>
+  const DATA = {"beats":[{"beatId":"B-001","scene":"INT OFFICE - DAY","logline":"Sara confronts Raj about the missing drives","status":"Ready","estMinutes":22,"shootDay":3,"location":"Office A","cast":["Sara","Raj"],"intent":"Force decision","stakes":"Job on the line","outcome":"Raj deflects","risks":[{"level":"Med","note":"Traffic noise"},{"level":"Med","note":"Tight schedule"}],"camera":{"coverage":"MS/OTS/CU","lenses":["35","50"],"move":"dolly"},"sound":{"mics":["boom","lav Sara"]},"checklist":[{"label":"Safety brief","done":false},{"label":"Continuity stills","done":false},{"label":"Wild tracks","done":false}],"links":{"script":"https://example.com/script/1","boards":"https://example.com/boards/1","drive":"https://example.com/drive/1","floorplan":"https://example.com/floor/1"}},{"beatId":"B-002","scene":"EXT STREET - NIGHT","logline":"Chase sequence through market","status":"Prep","estMinutes":35,"shootDay":3,"location":"Market","cast":["Stunt Team"],"intent":"Raise stakes","stakes":"Injury risk","outcome":"Narrow escape","risks":[{"level":"Med","note":"Weather risk"}],"camera":{"coverage":"WS/MS/CU","lenses":["24","35","85"],"move":"handheld"},"sound":{"mics":["boom"]},"checklist":[{"label":"Safety brief","done":false},{"label":"Wild tracks","done":false}],"links":{"script":"https://example.com/script/2","boards":"https://example.com/boards/2","drive":"https://example.com/drive/2","floorplan":"https://example.com/floor/2"}}],"shots":[{"id":"12A","beatId":"B-001","type":"MS","lens":35,"move":"static","est":4,"status":"done"},{"id":"12B","beatId":"B-001","type":"OTS","lens":50,"move":"dolly","est":6,"status":"doing"},{"id":"12C","beatId":"B-001","type":"CU","lens":50,"move":"dolly","est":5,"status":"todo"},{"id":"21A","beatId":"B-002","type":"WS","lens":24,"move":"handheld","est":8,"status":"todo"},{"id":"21B","beatId":"B-002","type":"MS","lens":35,"move":"handheld","est":10,"status":"todo"}]};
+  const q = document.getElementById('q');
+  const day = document.getElementById('day');
+  const status = document.getElementById('status');
+  const locationSel = document.getElementById('location');
+  const cardsEl = document.getElementById('cards');
+
+  function initOptions() {
+    const days = Array.from(new Set(DATA.beats.map(b=>b.shootDay).filter(Boolean))).sort((a,b)=>a-b);
+    days.forEach(d=>{ const o=document.createElement('option'); o.value=d; o.textContent='Day '+d; day.appendChild(o); });
+    const statuses = Array.from(new Set(DATA.beats.map(b=>b.status).filter(Boolean))).sort();
+    statuses.forEach(s=>{ const o=document.createElement('option'); o.value=s; o.textContent=s; status.appendChild(o); });
+    const locs = Array.from(new Set(DATA.beats.map(b=>b.location).filter(Boolean))).sort();
+    locs.forEach(l=>{ const o=document.createElement('option'); o.value=l; o.textContent=l; locationSel.appendChild(o); });
+  }
+
+  function render() {
+    const query = q.value.toLowerCase();
+    const dayVal = day.value; const statusVal = status.value; const locVal = locationSel.value;
+    const out = [];
+    for (const b of DATA.beats) {
+      if (dayVal && String(b.shootDay) !== String(dayVal)) continue;
+      if (statusVal && b.status !== statusVal) continue;
+      if (locVal && b.location !== locVal) continue;
+      const hay = (b.logline+' '+(b.scene||'')).toLowerCase();
+      if (query && !hay.includes(query)) continue;
+      out.push(b);
+    }
+    cardsEl.innerHTML = out.map(b=>{
+      const shots = DATA.shots.filter(s=>s.beatId===b.beatId);
+      const done = shots.filter(s=>String(s.status).toLowerCase()==='done').length;
+      return '<div class="card">'+
+        '<div class="title">#'+b.beatId+' • '+(b.scene||'')+' — '+b.logline+'</div>'+
+        '<div class="small">Est '+(b.estMinutes||0)+'m • Shots '+done+'/'+shots.length+'</div>'+
+        '<div style="margin:6px 0;">'+
+          (b.location?'<span class="pill">'+b.location+'</span>':'')+
+          (b.shootDay?'<span class="pill">Day '+b.shootDay+'</span>':'')+
+          (b.status?'<span class="pill">'+b.status+'</span>':'')+
+        '</div>'+
+        '<div class="small">Intent: '+(b.intent||'-')+'</div>'+
+      '</div>';
+    }).join('');
+  }
+
+  initOptions();
+  render();
+  q.addEventListener('input', render);
+  day.addEventListener('change', render);
+  status.addEventListener('change', render);
+  locationSel.addEventListener('change', render);
+</script>
+</body>
+</html>

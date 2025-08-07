@@ -1,0 +1,162 @@
+{
+  "beats": [
+    {
+      "beatId": "B-001",
+      "scene": "INT OFFICE - DAY",
+      "logline": "Sara confronts Raj about the missing drives",
+      "status": "Ready",
+      "estMinutes": 22,
+      "shootDay": 3,
+      "location": "Office A",
+      "cast": [
+        "Sara",
+        "Raj"
+      ],
+      "intent": "Force decision",
+      "stakes": "Job on the line",
+      "outcome": "Raj deflects",
+      "risks": [
+        {
+          "level": "Med",
+          "note": "Traffic noise"
+        },
+        {
+          "level": "Med",
+          "note": "Tight schedule"
+        }
+      ],
+      "camera": {
+        "coverage": "MS/OTS/CU",
+        "lenses": [
+          "35",
+          "50"
+        ],
+        "move": "dolly"
+      },
+      "sound": {
+        "mics": [
+          "boom",
+          "lav Sara"
+        ]
+      },
+      "checklist": [
+        {
+          "label": "Safety brief",
+          "done": false
+        },
+        {
+          "label": "Continuity stills",
+          "done": false
+        },
+        {
+          "label": "Wild tracks",
+          "done": false
+        }
+      ],
+      "links": {
+        "script": "https://example.com/script/1",
+        "boards": "https://example.com/boards/1",
+        "drive": "https://example.com/drive/1",
+        "floorplan": "https://example.com/floor/1"
+      }
+    },
+    {
+      "beatId": "B-002",
+      "scene": "EXT STREET - NIGHT",
+      "logline": "Chase sequence through market",
+      "status": "Prep",
+      "estMinutes": 35,
+      "shootDay": 3,
+      "location": "Market",
+      "cast": [
+        "Stunt Team"
+      ],
+      "intent": "Raise stakes",
+      "stakes": "Injury risk",
+      "outcome": "Narrow escape",
+      "risks": [
+        {
+          "level": "Med",
+          "note": "Weather risk"
+        }
+      ],
+      "camera": {
+        "coverage": "WS/MS/CU",
+        "lenses": [
+          "24",
+          "35",
+          "85"
+        ],
+        "move": "handheld"
+      },
+      "sound": {
+        "mics": [
+          "boom"
+        ]
+      },
+      "checklist": [
+        {
+          "label": "Safety brief",
+          "done": false
+        },
+        {
+          "label": "Wild tracks",
+          "done": false
+        }
+      ],
+      "links": {
+        "script": "https://example.com/script/2",
+        "boards": "https://example.com/boards/2",
+        "drive": "https://example.com/drive/2",
+        "floorplan": "https://example.com/floor/2"
+      }
+    }
+  ],
+  "shots": [
+    {
+      "id": "12A",
+      "beatId": "B-001",
+      "type": "MS",
+      "lens": 35,
+      "move": "static",
+      "est": 4,
+      "status": "done"
+    },
+    {
+      "id": "12B",
+      "beatId": "B-001",
+      "type": "OTS",
+      "lens": 50,
+      "move": "dolly",
+      "est": 6,
+      "status": "doing"
+    },
+    {
+      "id": "12C",
+      "beatId": "B-001",
+      "type": "CU",
+      "lens": 50,
+      "move": "dolly",
+      "est": 5,
+      "status": "todo"
+    },
+    {
+      "id": "21A",
+      "beatId": "B-002",
+      "type": "WS",
+      "lens": 24,
+      "move": "handheld",
+      "est": 8,
+      "status": "todo"
+    },
+    {
+      "id": "21B",
+      "beatId": "B-002",
+      "type": "MS",
+      "lens": 35,
+      "move": "handheld",
+      "est": 10,
+      "status": "todo"
+    }
+  ]
+}

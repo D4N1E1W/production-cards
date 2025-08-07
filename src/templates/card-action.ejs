@@ -1,0 +1,64 @@
+<div class="card">
+  <div class="header">
+    <div class="title">#<%= beat.beatId %> • <%= beat.scene || '' %> — <%= beat.logline %></div>
+    <div class="meta">
+      <span class="status <%= beat.status.toLowerCase() %>"><%= beat.status %></span>
+      <span>Est <%= beat.estMinutes || 0 %>m</span>
+      <span>Shots <span class="ok"><%= beat.shotProgress.done %></span>/<%= beat.shotProgress.total %></span>
+    </div>
+  </div>
+
+  <div class="pills">
+    <% if (beat.location) { %><span class="pill"><%= beat.location %></span><% } %>
+    <% if (beat.shootDay) { %><span class="pill">Day <%= beat.shootDay %></span><% } %>
+    <% if (beat.cast && beat.cast.length) { %><span class="pill">Cast: <%= beat.cast.join(', ') %></span><% } %>
+  </div>
+
+  <% if (beat.risks && beat.risks.length) { %>
+    <div class="small" style="color: var(--danger); font-weight:600;">Risks: <%= beat.risks.map(r => (r.level ? r.level+': ' : '') + r.note).join(' • ') %></div>
+  <% } %>
+
+  <div class="grid">
+    <div>
+      <div class="section-title">Coverage</div>
+      <div class="kv">
+        <div>Plan</div><div><%= (beat.camera && beat.camera.coverage) || '-' %></div>
+        <div>Lenses</div><div><%= (beat.camera && beat.camera.lenses && beat.camera.lenses.join(', ')) || '-' %></div>
+        <div>Move</div><div><%= (beat.camera && beat.camera.move) || '-' %></div>
+        <div>Mics</div><div><%= (beat.sound && beat.sound.mics && beat.sound.mics.join(', ')) || '-' %></div>
+      </div>
+      <hr/>
+      <div class="section-title">Safety & Contingency</div>
+      <div class="list">
+        <% (beat.checklist || []).forEach(function(item){ %>
+          <div class="small">[<%= item.done ? 'x' : ' ' %>] <%= item.label %></div>
+        <% }) %>
+        <% if (!beat.checklist || !beat.checklist.length) { %>
+          <div class="small">Add safety checklist items</div>
+        <% } %>
+      </div>
+    </div>
+    <div>
+      <div class="section-title">Shotlist</div>
+      <div class="list">
+        <% (beat.shots || []).forEach(function(s){ %>
+          <div class="small"><strong><%= s.id %></strong> — <%= s.type || '-' %> • <%= s.lens ? s.lens + 'mm' : '-' %> • <%= s.move || '-' %> • <%= s.status %> • <%= s.est || 0 %>m</div>
+        <% }) %>
+        <% if (!beat.shots || !beat.shots.length) { %>
+          <div class="small">No shots</div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="links">
+      <% if (beat.links && beat.links.script) { %><a class="link" href="<%= beat.links.script %>">Script</a><% } %>
+      <% if (beat.links && beat.links.boards) { %><a class="link" href="<%= beat.links.boards %>">Boards</a><% } %>
+      <% if (beat.links && beat.links.drive) { %><a class="link" href="<%= beat.links.drive %>">Drive</a><% } %>
+    </div>
+    <% if (beat.qrDataUrl) { %>
+      <img class="qr" src="<%= beat.qrDataUrl %>" alt="QR"/>
+    <% } %>
+  </div>
+</div>
