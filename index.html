@@ -385,16 +385,18 @@
         /* Reference Image */
         .reference-image {
             width: 100%;
+            max-width: 400px;
             border-radius: 8px;
             margin-bottom: 10px;
             cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         
         .image-upload-area {
             background: var(--gray-light);
-            border: 2px dashed var(--gray-border);
+            border: 2px dashed var(--cg-pink);
             border-radius: 8px;
-            padding: 20px;
+            padding: 30px;
             text-align: center;
             cursor: pointer;
             transition: all 0.2s;
@@ -402,16 +404,35 @@
         
         .image-upload-area:hover {
             border-color: var(--cg-pink);
-            background: white;
+            background: rgba(253, 7, 134, 0.05);
+            transform: scale(1.02);
         }
         
         .image-upload-label {
+            color: var(--cg-pink);
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .image-upload-hint {
             color: var(--text-muted);
-            font-size: 14px;
+            font-size: 12px;
+            margin-top: 8px;
         }
         
         .image-upload-input {
             display: none;
+        }
+        
+        .image-remove-btn {
+            background: var(--cg-red);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
         }
         
         /* Quick Actions */
@@ -525,23 +546,126 @@
             }
         }
         
+        /* PDF Export Styles */
         @media print {
+            @page {
+                size: A4;
+                margin: 20mm;
+            }
+            
+            body {
+                background: white !important;
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+            
+            .landing-page,
             .header-actions,
             .quick-actions,
             .status-icon,
-            .prop-checkbox,
             .prop-delete,
             .add-prop-btn,
-            .image-upload-area {
+            .image-upload-area,
+            .image-remove-btn,
+            .modal {
                 display: none !important;
+            }
+            
+            .app-container {
+                display: block !important;
+            }
+            
+            .header {
+                position: relative !important;
+                page-break-after: avoid;
+                margin-bottom: 20px;
+                box-shadow: none !important;
+                border-bottom: 2px solid var(--cg-pink) !important;
+            }
+            
+            .production-title {
+                font-size: 24px !important;
+                color: var(--cg-pink) !important;
+                margin-bottom: 10px;
             }
             
             .beat-card {
                 page-break-inside: avoid;
+                margin-bottom: 25px !important;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+                border: 1px solid #e9ecef !important;
+            }
+            
+            .beat-header {
+                background: linear-gradient(135deg, #fd0786 0%, #ff4b9f 100%) !important;
+                color: white !important;
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+                padding: 15px !important;
+                font-size: 18px !important;
+            }
+            
+            .beat-header.completed {
+                background: linear-gradient(135deg, #28a745 0%, #5cb85c 100%) !important;
             }
             
             .beat-content {
                 display: block !important;
+                padding: 20px !important;
+            }
+            
+            .field-label {
+                color: var(--text-muted) !important;
+                font-weight: bold !important;
+                margin-bottom: 10px !important;
+            }
+            
+            .field-content {
+                background: #f8f9fa !important;
+                padding: 15px !important;
+                border-radius: 8px !important;
+                margin-bottom: 15px !important;
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+            
+            .prop-checkbox {
+                display: inline-block !important;
+                width: 20px !important;
+                height: 20px !important;
+                border: 2px solid var(--cg-pink) !important;
+                border-radius: 4px !important;
+                margin-right: 10px !important;
+                vertical-align: middle !important;
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+            
+            .prop-checkbox.checked {
+                background: var(--cg-pink) !important;
+                color: white !important;
+                text-align: center !important;
+                line-height: 16px !important;
+                print-color-adjust: exact !important;
+                -webkit-print-color-adjust: exact !important;
+            }
+            
+            .prop-checkbox.checked::after {
+                content: "✓" !important;
+                color: white !important;
+                display: block !important;
+            }
+            
+            .reference-image {
+                max-width: 100% !important;
+                height: auto !important;
+                page-break-inside: avoid !important;
+                margin: 10px 0 !important;
+            }
+            
+            .field-content.empty {
+                color: #999 !important;
+                font-style: italic !important;
             }
         }
     </style>
@@ -567,10 +691,11 @@
             <div class="header-content">
                 <div class="production-title" id="productionTitle">Production</div>
                 <div class="header-actions">
-                    <button class="btn-icon" id="editToggle" onclick="toggleEditMode()">✏️</button>
-                    <button class="btn-icon" onclick="shareProduction()">🔗</button>
-                    <button class="btn-icon" onclick="exportData()">💾</button>
-                    <button class="btn-icon" onclick="backToMenu()">🏠</button>
+                    <button class="btn-icon" id="editToggle" onclick="toggleEditMode()" title="Edit Mode">✏️</button>
+                    <button class="btn-icon" onclick="shareProduction()" title="Share Link">🔗</button>
+                    <button class="btn-icon" onclick="exportPDF()" title="Download PDF">📄</button>
+                    <button class="btn-icon" onclick="exportData()" title="Export JSON">💾</button>
+                    <button class="btn-icon" onclick="backToMenu()" title="Back to Menu">🏠</button>
                 </div>
             </div>
             <div class="beat-progress">
@@ -826,11 +951,12 @@
                             <div class="field-label">REFERENCE IMAGE</div>
                             ${beat.referenceImage ? `
                                 <img src="${beat.referenceImage}" class="reference-image" onclick="viewImage('${beat.referenceImage}')" alt="Reference">
-                                ${editMode ? `<button class="prop-delete" onclick="removeImage(${index})">Remove Image</button>` : ''}
+                                ${editMode ? `<br><button class="image-remove-btn" onclick="removeImage(${index})">Remove Image</button>` : ''}
                             ` : ''}
                             ${editMode && !beat.referenceImage ? `
                                 <div class="image-upload-area" onclick="document.getElementById('imageUpload${index}').click()">
-                                    <div class="image-upload-label">📸 Click to upload reference image</div>
+                                    <div class="image-upload-label">📸 Upload Reference Image</div>
+                                    <div class="image-upload-hint">Click to select image (max 500KB)</div>
                                     <input type="file" id="imageUpload${index}" class="image-upload-input" accept="image/*" onchange="uploadImage(${index}, this)">
                                 </div>
                             ` : (!beat.referenceImage && !editMode ? '<div style="color: var(--text-muted); font-style: italic; font-size: 14px;">No reference image</div>' : '')}
@@ -1017,6 +1143,56 @@
             showToast('Link copied!');
         }
         
+        // Export as PDF
+        function exportPDF() {
+            showToast('Preparing PDF...');
+            
+            // Store current state
+            const wasEditMode = editMode;
+            
+            // Ensure all beats are expanded for printing
+            document.querySelectorAll('.beat-card').forEach(card => {
+                card.classList.add('expanded');
+            });
+            
+            // Exit edit mode for clean print
+            if (editMode) {
+                editMode = false;
+                renderBeats();
+                document.querySelectorAll('.beat-card').forEach(card => {
+                    card.classList.add('expanded');
+                });
+            }
+            
+            // Update page title for PDF filename
+            const originalTitle = document.title;
+            const date = new Date().toISOString().split('T')[0];
+            document.title = `${currentProduction.title} - Production Cards - ${date}`;
+            
+            // Add print-specific class
+            document.body.classList.add('printing');
+            
+            // Trigger print dialog
+            setTimeout(() => {
+                window.print();
+                
+                // Restore state after printing
+                setTimeout(() => {
+                    document.title = originalTitle;
+                    document.body.classList.remove('printing');
+                    if (wasEditMode) {
+                        editMode = true;
+                        renderBeats();
+                    } else {
+                        // Collapse all but first beat
+                        document.querySelectorAll('.beat-card').forEach((card, i) => {
+                            if (i !== 0) card.classList.remove('expanded');
+                        });
+                    }
+                }, 100);
+            }, 100);
+        }
+        
         // Export data as JSON
         function exportData() {
             const dataStr = JSON.stringify(currentProduction, null, 2);
@@ -1028,6 +1204,7 @@
             document.body.appendChild(exportLink);
             exportLink.click();
             document.body.removeChild(exportLink);
+            showToast('Data exported as JSON!');
         }
         
         // Back to menu
