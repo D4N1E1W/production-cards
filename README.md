@@ -21,19 +21,32 @@ beat-cards generate \
   --out dist \
   --pdf true \
   --page A5 \
+  --tile 2x \
   --template narrative \
   --qrUrlTemplate "https://app.clickup.com/t/{beatId}" \
   --filter status=Ready \
-  --today 3
+  --today 3 \
+  --bundlePerDay true \
+  --viewer true
 ```
 
 - **--beats/--shots**: CSV or JSON files
 - **--mapping**: Optional JSON mapping for your column names
 - **--page**: A5 (default), A6, or Letter
-- **--template**: `narrative` or `interview`
+- **--tile**: `none` (default), `2x`, or `4x` (best with Letter)
+- **--template**: `narrative`, `interview`, or `action`
 - **--qrUrlTemplate**: Embed QR per beat (use `{beatId}` placeholder)
 - **--filter**: Any number of `key=value` filters (e.g., `status=Ready`)
 - **--today**: Filter by `shootDay`
+- **--bundlePerDay**: Create `day-N` sub-folders with their own decks
+- **--viewer**: Also output a lightweight `viewer.html` with filters
+
+#### Convenience scripts
+```bash
+npm run generate:today     # Day 3 sample deck
+npm run generate:perday    # Split decks per shoot day
+npm run generate:letter2x  # Letter PDF, two cards per row (tiled)
+```
 
 #### Mapping file (optional)
 Map your table columns to fields if they differ from the defaults:
@@ -68,8 +81,10 @@ If PDF export fails (e.g., headless browser unavailable), use the generated `car
 #### Templates
 - `narrative`: Story beats, camera and sound, shotlist
 - `interview`: Intent, prompts, B-roll/cutaways, tech setup
+- `action`: Dense shotlist, risks highlighted, safety + contingency
 
 #### Notes
 - All assets are local/offline. No external fonts.
 - Color-blind friendly where possible using shapes and labels.
 - QR codes generated on-card if `--qrUrlTemplate` is provided.
+- `viewer.html` embeds your data for a fast, offline board view with filters.

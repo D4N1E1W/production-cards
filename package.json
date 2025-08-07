@@ -8,7 +8,10 @@
   },
   "scripts": {
     "generate:sample": "node bin/beat-cards.js generate --beats data/beats.sample.csv --shots data/shots.sample.csv --out dist --pdf true --page A5",
-    "validate:sample": "node bin/beat-cards.js validate --beats data/beats.sample.csv --shots data/shots.sample.csv"
+    "validate:sample": "node bin/beat-cards.js validate --beats data/beats.sample.csv --shots data/shots.sample.csv",
+    "generate:today": "node bin/beat-cards.js generate --beats data/beats.sample.csv --shots data/shots.sample.csv --out dist/today --pdf true --template narrative --today 3",
+    "generate:perday": "node bin/beat-cards.js generate --beats data/beats.sample.csv --shots data/shots.sample.csv --out dist/perday --pdf true --bundlePerDay true",
+    "generate:letter2x": "node bin/beat-cards.js generate --beats data/beats.sample.csv --shots data/shots.sample.csv --out dist/letter2x --pdf true --page Letter --tile 2x"
   },
   "keywords": [
     "production",

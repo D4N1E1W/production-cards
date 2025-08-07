@@ -28,6 +28,11 @@ body {
   gap: 10mm;
 }
 
+/* Tiled modes for Letter pages */
+.wrapper.tiled-2x { grid-template-columns: 1fr 1fr; gap: 8mm; }
+.wrapper.tiled-4x { grid-template-columns: 1fr 1fr; gap: 6mm; }
+.wrapper.tiled-4x .card { padding: 5mm; }
+
 .card {
   width: 100%;
   border: 1px solid var(--border);
@@ -101,4 +106,4 @@ hr { border: none; border-top: 1px solid var(--border); margin: 2mm 0; }
   .page-break { break-after: page; }
 }
 
-/* Size overrides from inline style in layout when not A5 */
+/* Size overrides by layout for non-A5 are handled via @page in layout */

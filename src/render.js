@@ -12,7 +12,7 @@ async function generateQrDataUrl(url) {
   }
 }
 
-async function renderHtml({ beats, shots, pageSize, template, qrUrlTemplate }) {
+async function renderHtml({ beats, shots, pageSize, template, qrUrlTemplate, tile }) {
   const templateDir = path.join(__dirname, 'templates');
   const stylePath = path.join(__dirname, 'styles.css');
   const layoutPath = path.join(templateDir, 'layout.ejs');
@@ -44,7 +44,8 @@ async function renderHtml({ beats, shots, pageSize, template, qrUrlTemplate }) {
       pageSize,
       style,
       renderCard,
-      beats: beatsWithComputed
+      beats: beatsWithComputed,
+      tile: tile || 'none'
     },
     { async: false }
   );

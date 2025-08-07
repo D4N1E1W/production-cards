@@ -9,7 +9,7 @@
     <title>Beat Cards</title>
   </head>
   <body>
-    <div class="wrapper">
+    <div class="wrapper <%= tile !== 'none' ? ('tiled-' + tile) : '' %>">
       <% beats.forEach(function(beat, idx) { %>
         <%- renderCard({ beat }) %>
       <% }) %>
