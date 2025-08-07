@@ -7,6 +7,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>CG Production Cards</title>
     <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/png" href="https://cdn.shopify.com/s/files/1/0559/6400/8510/files/CG_LOGO.png?v=1742583010">
+    <link rel="apple-touch-icon" href="https://cdn.shopify.com/s/files/1/0559/6400/8510/files/CG_LOGO.png?v=1742583010">
     <meta name="theme-color" content="#fd0786">
     
     <style>
@@ -37,6 +39,31 @@
             min-height: 100vh;
         }
         
+        /* Logo Styles */
+        .logo-img {
+            width: 200px;
+            height: auto;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 4px 20px rgba(0,0,0,0.2));
+        }
+        
+        .header-logo {
+            height: 30px;
+            width: auto;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        
+        @media (max-width: 480px) {
+            .logo-img {
+                width: 150px;
+            }
+            
+            .header-logo {
+                height: 24px;
+            }
+        }
+        
         /* Landing Page */
         .landing-page {
             display: flex;
@@ -53,17 +80,11 @@
             display: none;
         }
         
-        .logo {
-            font-size: 48px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        }
-        
         .tagline {
             font-size: 18px;
             opacity: 0.9;
             margin-bottom: 40px;
+            color: white;
         }
         
         .production-selector {
@@ -161,6 +182,13 @@
             font-size: 18px;
             font-weight: bold;
             color: var(--cg-pink);
+            vertical-align: middle;
+        }
+        
+        @media (max-width: 480px) {
+            .production-title {
+                font-size: 16px;
+            }
         }
         
         .header-actions {
@@ -581,12 +609,21 @@
                 margin-bottom: 20px;
                 box-shadow: none !important;
                 border-bottom: 2px solid var(--cg-pink) !important;
+                padding-bottom: 15px !important;
+            }
+            
+            .header-logo {
+                display: inline-block !important;
+                height: 40px !important;
+                margin-right: 15px !important;
+                vertical-align: middle !important;
             }
             
             .production-title {
                 font-size: 24px !important;
                 color: var(--cg-pink) !important;
-                margin-bottom: 10px;
+                display: inline-block !important;
+                vertical-align: middle !important;
             }
             
             .beat-card {
@@ -667,13 +704,33 @@
                 color: #999 !important;
                 font-style: italic !important;
             }
+            
+            /* Add footer with logo for print */
+            @page {
+                @bottom-center {
+                    content: "Clean Girl Productions";
+                    font-size: 10px;
+                    color: var(--text-muted);
+                }
+            }
+            
+            .beats-container::after {
+                content: "";
+                display: block;
+                text-align: center;
+                padding: 20px;
+                margin-top: 40px;
+                border-top: 1px solid var(--gray-border);
+                font-size: 12px;
+                color: var(--text-muted);
+            }
         }
     </style>
 </head>
 <body>
     <!-- Landing Page -->
     <div class="landing-page" id="landingPage">
-        <div class="logo">CLEAN GIRL</div>
+        <img src="https://cdn.shopify.com/s/files/1/0559/6400/8510/files/CG_LOGO.png?v=1742583010" alt="Clean Girl" class="logo-img">
         <div class="tagline">Production Cards</div>
         
         <div class="production-selector">
@@ -689,7 +746,10 @@
     <div class="app-container" id="appContainer">
         <div class="header">
             <div class="header-content">
-                <div class="production-title" id="productionTitle">Production</div>
+                <div style="display: flex; align-items: center;">
+                    <img src="https://cdn.shopify.com/s/files/1/0559/6400/8510/files/CG_LOGO.png?v=1742583010" alt="CG" class="header-logo">
+                    <div class="production-title" id="productionTitle">Production</div>
+                </div>
                 <div class="header-actions">
                     <button class="btn-icon" id="editToggle" onclick="toggleEditMode()" title="Edit Mode">✏️</button>
                     <button class="btn-icon" onclick="shareProduction()" title="Share Link">🔗</button>
@@ -717,6 +777,7 @@
     <!-- Share Modal -->
     <div class="modal" id="shareModal">
         <div class="modal-content">
+            <img src="https://cdn.shopify.com/s/files/1/0559/6400/8510/files/CG_LOGO.png?v=1742583010" alt="Clean Girl" style="height: 40px; margin-bottom: 20px;">
             <div class="modal-title">Share Production</div>
             <div class="share-link" id="shareLink"></div>
             <div class="modal-actions">
@@ -1239,9 +1300,24 @@
             setTimeout(() => toast.remove(), 2000);
         }
         
-        // Register service worker for offline support
+        // Also update manifest if needed
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js').catch(() => {});
+            
+            // Update manifest icon
+            const link = document.querySelector("link[rel='manifest']");
+            if (link) {
+                fetch('/manifest.json')
+                    .then(response => response.json())
+                    .then(manifest => {
+                        manifest.icons = [{
+                            "src": "https://cdn.shopify.com/s/files/1/0559/6400/8510/files/CG_LOGO.png?v=1742583010",
+                            "sizes": "192x192",
+                            "type": "image/png"
+                        }];
+                    })
+                    .catch(() => {});
+            }
         }
     </script>
 </body>
