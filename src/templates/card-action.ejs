@@ -1,51 +1,66 @@
 <div class="card">
   <div class="header">
-    <div class="title">#<%= beat.beatId %> • <%= beat.scene || '' %> — <%= beat.logline %></div>
+    <div class="title">
+      <span style="font-size: 9pt; color: var(--danger); font-weight: 800; margin-right: 2mm;">#<%= beat.beatId %></span>
+      <span style="color: var(--danger);">&#9889;</span> <%= beat.scene || 'Action Scene' %> &mdash; <%= beat.logline %>
+    </div>
     <div class="meta">
-      <span class="status <%= beat.status.toLowerCase() %>"><%= beat.status %></span>
-      <span>Est <%= beat.estMinutes || 0 %>m</span>
-      <span>Shots <span class="ok"><%= beat.shotProgress.done %></span>/<%= beat.shotProgress.total %></span>
+      <span class="status <%= beat.status.toLowerCase() %>">&#127916; <%= beat.status %></span>
+      <span style="background: var(--surface); padding: 1mm 2mm; border-radius: var(--radius-sm); font-weight: 600;">&#9201; <%= beat.estMinutes || 0 %>m</span>
+      <span style="background: var(--surface); padding: 1mm 2mm; border-radius: var(--radius-sm); font-weight: 600;">&#128249; <span class="ok"><%= beat.shotProgress.done %></span>/<%= beat.shotProgress.total %></span>
     </div>
   </div>
 
   <div class="pills">
-    <% if (beat.location) { %><span class="pill"><%= beat.location %></span><% } %>
-    <% if (beat.shootDay) { %><span class="pill">Day <%= beat.shootDay %></span><% } %>
-    <% if (beat.cast && beat.cast.length) { %><span class="pill">Cast: <%= beat.cast.join(', ') %></span><% } %>
+    <% if (beat.location) { %><span class="pill" style="border-color: var(--danger); color: var(--danger);">&#128205; <%= beat.location %></span><% } %>
+    <% if (beat.shootDay) { %><span class="pill">&#128197; Day <%= beat.shootDay %></span><% } %>
+    <% if (beat.cast && beat.cast.length) { %><span class="pill">&#127917; <%= beat.cast.join(', ') %></span><% } %>
+    <% if (beat.stunts) { %><span class="pill" style="border-color: var(--warning); color: var(--warning);">&#9888; Stunts</span><% } %>
+    <% if (beat.effects) { %><span class="pill" style="border-color: var(--info); color: var(--info);">&#10024; VFX</span><% } %>
   </div>
 
   <% if (beat.risks && beat.risks.length) { %>
-    <div class="small" style="color: var(--danger); font-weight:600;">Risks: <%= beat.risks.map(r => (r.level ? r.level+': ' : '') + r.note).join(' • ') %></div>
+    <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid var(--danger); border-radius: var(--radius-md); padding: 2mm; margin: 2mm 0;">
+      <div style="color: var(--danger); font-weight: 700; font-size: 8.5pt; margin-bottom: 1mm;">&#9888; SAFETY RISKS</div>
+      <div class="small" style="color: var(--danger); font-weight: 600;"><%= beat.risks.map(r => (r.level ? r.level+': ' : '') + r.note).join(' • ') %></div>
+    </div>
   <% } %>
 
   <div class="grid">
     <div>
-      <div class="section-title">Coverage</div>
+      <div class="section-title">&#127909; Action Coverage</div>
       <div class="kv">
-        <div>Plan</div><div><%= (beat.camera && beat.camera.coverage) || '-' %></div>
-        <div>Lenses</div><div><%= (beat.camera && beat.camera.lenses && beat.camera.lenses.join(', ')) || '-' %></div>
-        <div>Move</div><div><%= (beat.camera && beat.camera.move) || '-' %></div>
-        <div>Mics</div><div><%= (beat.sound && beat.sound.mics && beat.sound.mics.join(', ')) || '-' %></div>
+        <div>&#128249; Plan</div><div><%= (beat.camera && beat.camera.coverage) || 'Multi-cam setup' %></div>
+        <div>&#128269; Lenses</div><div><%= (beat.camera && beat.camera.lenses && beat.camera.lenses.join(', ')) || 'Wide + telephoto' %></div>
+        <div>&#127916; Movement</div><div><%= (beat.camera && beat.camera.move) || 'Handheld/gimbal' %></div>
+        <div>&#127908; Audio</div><div><%= (beat.sound && beat.sound.mics && beat.sound.mics.join(', ')) || 'Boom + wireless' %></div>
+        <% if (beat.framerate) { %><div>&#127916; FPS</div><div><%= beat.framerate %></div><% } %>
       </div>
       <hr/>
-      <div class="section-title">Safety & Contingency</div>
+      <div class="section-title">&#128737; Safety & Contingency</div>
       <div class="list">
         <% (beat.checklist || []).forEach(function(item){ %>
-          <div class="small">[<%= item.done ? 'x' : ' ' %>] <%= item.label %></div>
+          <div class="small" style="display: flex; align-items: center; gap: 1mm; margin-bottom: 1mm; padding: 1mm; background: <%= item.done ? 'rgba(16, 185, 129, 0.1)' : 'var(--surface)' %>; border-radius: var(--radius-sm);">
+            <span style="color: <%= item.done ? 'var(--success)' : 'var(--warning)' %>; font-weight: bold;"><%= item.done ? '&#10003;' : '&#9888;' %></span>
+            <span style="<%= item.done ? 'text-decoration: line-through; opacity: 0.7;' : 'font-weight: 500;' %>"><%= item.label %></span>
+          </div>
         <% }) %>
         <% if (!beat.checklist || !beat.checklist.length) { %>
-          <div class="small">Add safety checklist items</div>
+          <div class="small" style="color: var(--warning); font-style: italic; text-align: center; padding: 2mm; background: rgba(245, 158, 11, 0.1); border-radius: var(--radius-sm);">&#9888; Add safety checklist items</div>
         <% } %>
       </div>
     </div>
     <div>
-      <div class="section-title">Shotlist</div>
+      <div class="section-title">&#127919; Action Shots</div>
       <div class="list">
         <% (beat.shots || []).forEach(function(s){ %>
-          <div class="small"><strong><%= s.id %></strong> — <%= s.type || '-' %> • <%= s.lens ? s.lens + 'mm' : '-' %> • <%= s.move || '-' %> • <%= s.status %> • <%= s.est || 0 %>m</div>
+          <div class="small" style="background: var(--surface); padding: 1.5mm; border-radius: var(--radius-sm); margin-bottom: 1mm; border-left: 3px solid <%= s.status === 'done' ? 'var(--success)' : s.status === 'in-progress' ? 'var(--warning)' : 'var(--danger)' %>;">
+            <strong style="color: var(--danger);"><%= s.id %></strong> — <%= s.type || 'Action' %> • <%= s.lens ? s.lens + 'mm' : 'Variable' %> • <%= s.move || 'Dynamic' %><br>
+            <span style="font-size: 7.5pt; color: var(--muted);">Status: <%= s.status %> • Est: <%= s.est || 0 %>m • Takes: <%= s.takes || 'Multiple' %></span>
+          </div>
         <% }) %>
         <% if (!beat.shots || !beat.shots.length) { %>
-          <div class="small">No shots</div>
+          <div class="small" style="color: var(--warning); font-style: italic; text-align: center; padding: 2mm; background: rgba(245, 158, 11, 0.1); border-radius: var(--radius-sm);">&#9889; Action shots to be planned</div>
         <% } %>
       </div>
     </div>

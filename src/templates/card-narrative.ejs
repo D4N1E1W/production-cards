@@ -1,17 +1,21 @@
 <div class="card">
   <div class="header">
-    <div class="title">#<%= beat.beatId %> • <%= beat.scene || 'Untitled Scene' %> — <%= beat.logline %></div>
+    <div class="title">
+      <span style="font-size: 9pt; color: var(--accent); font-weight: 800; margin-right: 2mm;">#<%= beat.beatId %></span>
+      <%= beat.scene || 'Untitled Scene' %> &mdash; <%= beat.logline %>
+    </div>
     <div class="meta">
-      <span class="status <%= beat.status.toLowerCase() %>"><%= beat.status %></span>
-      <span>Est <%= beat.estMinutes || 0 %>m</span>
-      <span>Shots <span class="ok"><%= beat.shotProgress.done %></span>/<%= beat.shotProgress.total %></span>
+      <span class="status <%= beat.status.toLowerCase() %>">&#127916; <%= beat.status %></span>
+      <span style="background: var(--surface); padding: 1mm 2mm; border-radius: var(--radius-sm); font-weight: 600;">&#9201; <%= beat.estMinutes || 0 %>m</span>
+      <span style="background: var(--surface); padding: 1mm 2mm; border-radius: var(--radius-sm); font-weight: 600;">&#128249; <span class="ok"><%= beat.shotProgress.done %></span>/<%= beat.shotProgress.total %></span>
     </div>
   </div>
 
   <div class="pills">
-    <% if (beat.location) { %><span class="pill"><%= beat.location %></span><% } %>
-    <% if (beat.cast && beat.cast.length) { %><span class="pill">Cast: <%= beat.cast.join(', ') %></span><% } %>
-    <% if (beat.shootDay) { %><span class="pill">Day <%= beat.shootDay %></span><% } %>
+    <% if (beat.location) { %><span class="pill">&#128205; <%= beat.location %></span><% } %>
+    <% if (beat.cast && beat.cast.length) { %><span class="pill">&#127917; <%= beat.cast.join(', ') %></span><% } %>
+    <% if (beat.shootDay) { %><span class="pill">&#128197; Day <%= beat.shootDay %></span><% } %>
+    <% if (beat.weather) { %><span class="pill">&#127780; <%= beat.weather %></span><% } %>
   </div>
 
   <div class="progress small">
@@ -23,37 +27,48 @@
 
   <div class="grid">
     <div>
-      <div class="section-title">Story</div>
+      <div class="section-title">&#128214; Narrative</div>
       <div class="kv">
-        <div>Intent</div><div><%= beat.intent || '-' %></div>
-        <div>Stakes</div><div><%= beat.stakes || '-' %></div>
-        <div>Outcome</div><div><%= beat.outcome || '-' %></div>
+        <div>&#127919; Intent</div><div><%= beat.intent || 'Define character motivation' %></div>
+        <div>&#9889; Stakes</div><div><%= beat.stakes || 'What\'s at risk' %></div>
+        <div>&#127914; Outcome</div><div><%= beat.outcome || 'Scene resolution' %></div>
+        <% if (beat.emotion) { %><div>&#128173; Emotion</div><div><%= beat.emotion %></div><% } %>
       </div>
       <hr/>
-      <div class="section-title">Checklist</div>
+      <div class="section-title">&#9989; Production Notes</div>
       <div class="list">
         <% (beat.checklist || []).forEach(function(item){ %>
-          <div class="small">[<%= item.done ? 'x' : ' ' %>] <%= item.label %></div>
+          <div class="small" style="display: flex; align-items: center; gap: 1mm; margin-bottom: 1mm;">
+            <span style="color: <%= item.done ? 'var(--success)' : 'var(--muted)' %>; font-weight: bold;"><%= item.done ? '&#10003;' : '&#9675;' %></span>
+            <span style="<%= item.done ? 'text-decoration: line-through; opacity: 0.7;' : '' %>"><%= item.label %></span>
+          </div>
         <% }) %>
+        <% if (!beat.checklist || !beat.checklist.length) { %>
+          <div class="small" style="color: var(--muted); font-style: italic;">&#128221; Add production checklist items</div>
+        <% } %>
       </div>
     </div>
 
     <div>
-      <div class="section-title">Camera & Sound</div>
+      <div class="section-title">&#127909; Technical</div>
       <div class="kv">
-        <div>Coverage</div><div><%= (beat.camera && beat.camera.coverage) || '-' %></div>
-        <div>Lenses</div><div><%= (beat.camera && beat.camera.lenses && beat.camera.lenses.join(', ')) || '-' %></div>
-        <div>Move</div><div><%= (beat.camera && beat.camera.move) || '-' %></div>
-        <div>Mics</div><div><%= (beat.sound && beat.sound.mics && beat.sound.mics.join(', ')) || '-' %></div>
+        <div>&#128208; Coverage</div><div><%= (beat.camera && beat.camera.coverage) || 'Standard coverage' %></div>
+        <div>&#128269; Lenses</div><div><%= (beat.camera && beat.camera.lenses && beat.camera.lenses.join(', ')) || 'Standard kit' %></div>
+        <div>&#127916; Movement</div><div><%= (beat.camera && beat.camera.move) || 'Static/handheld' %></div>
+        <div>&#127908; Audio</div><div><%= (beat.sound && beat.sound.mics && beat.sound.mics.join(', ')) || 'Boom + lavs' %></div>
+        <% if (beat.lighting) { %><div>&#128161; Lighting</div><div><%= beat.lighting %></div><% } %>
       </div>
       <hr/>
-      <div class="section-title">Shots</div>
+      <div class="section-title">&#127919; Shot List</div>
       <div class="list">
         <% (beat.shots || []).forEach(function(s){ %>
-          <div class="small"><strong><%= s.id %></strong> — <%= s.type || '-' %> • <%= s.lens ? s.lens + 'mm' : '-' %> • <%= s.move || '-' %> • <%= s.status %> • <%= s.est || 0 %>m</div>
+          <div class="small" style="background: var(--surface); padding: 1.5mm; border-radius: var(--radius-sm); margin-bottom: 1mm; border-left: 3px solid <%= s.status === 'done' ? 'var(--success)' : s.status === 'in-progress' ? 'var(--warning)' : 'var(--muted)' %>;">
+            <strong style="color: var(--accent);"><%= s.id %></strong> — <%= s.type || 'Standard' %> • <%= s.lens ? s.lens + 'mm' : '35mm' %> • <%= s.move || 'Static' %><br>
+            <span style="font-size: 7.5pt; color: var(--muted);">Status: <%= s.status %> • Est: <%= s.est || 0 %>m</span>
+          </div>
         <% }) %>
         <% if (!beat.shots || !beat.shots.length) { %>
-          <div class="small">No shots</div>
+          <div class="small" style="color: var(--muted); font-style: italic; text-align: center; padding: 2mm;">&#128203; Shot list to be determined</div>
         <% } %>
       </div>
     </div>
