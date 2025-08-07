@@ -1303,21 +1303,6 @@
         // Also update manifest if needed
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js').catch(() => {});
-            
-            // Update manifest icon
-            const link = document.querySelector("link[rel='manifest']");
-            if (link) {
-                fetch('/manifest.json')
-                    .then(response => response.json())
-                    .then(manifest => {
-                        manifest.icons = [{
-                            "src": "https://cdn.shopify.com/s/files/1/0559/6400/8510/files/CG_LOGO.png?v=1742583010",
-                            "sizes": "192x192",
-                            "type": "image/png"
-                        }];
-                    })
-                    .catch(() => {});
-            }
         }
     </script>
 </body>

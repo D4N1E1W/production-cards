@@ -43,8 +43,12 @@ function toArray(value) {
 function normalizeBeatsAndShots(beatsRaw, shotsRaw, mapping) {
   const map = mapping && mapping.beats ? mapping.beats : defaultMapping;
 
-  const beats = beatsRaw.map((row) => {
-    const beatId = pickFirst(row, map.beatId) || String(pickFirst(row, map.scene) || '').replace(/\s+/g, '-') + '-' + String(row.__rownum || '');
+  const beats = beatsRaw.map((row, index) => {
+    const explicitBeatId = pickFirst(row, map.beatId);
+    const sceneSlug = String(pickFirst(row, map.scene) || '')
+      .trim()
+      .replace(/\s+/g, '-');
+    const beatId = explicitBeatId || (sceneSlug ? `${sceneSlug}-${index + 1}` : `beat-${index + 1}`);
     const lenses = toArray(pickFirst(row, map.lenses)).map((x) => String(x));
     const mics = toArray(pickFirst(row, map.sound_mics));
     const checklist = toArray(pickFirst(row, map.checklist)).map((label) => ({ label, done: false }));
