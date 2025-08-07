@@ -1,0 +1,61 @@
+<div class="card">
+  <div class="header">
+    <div class="title">#<%= beat.beatId %> • <%= beat.logline %></div>
+    <div class="meta">
+      <span class="status <%= beat.status.toLowerCase() %>"><%= beat.status %></span>
+      <span>Est <%= beat.estMinutes || 0 %>m</span>
+      <span>Shots <span class="ok"><%= beat.shotProgress.done %></span>/<%= beat.shotProgress.total %></span>
+    </div>
+  </div>
+
+  <div class="pills">
+    <% if (beat.location) { %><span class="pill"><%= beat.location %></span><% } %>
+    <% if (beat.shootDay) { %><span class="pill">Day <%= beat.shootDay %></span><% } %>
+  </div>
+
+  <div class="grid">
+    <div>
+      <div class="section-title">Intent</div>
+      <div class="small"><%= beat.intent || '-' %></div>
+      <hr/>
+      <div class="section-title">Key Questions</div>
+      <div class="list">
+        <% (beat.checklist || []).forEach(function(item){ %>
+          <div class="small">• <%= item.label %></div>
+        <% }) %>
+        <% if (!(beat.checklist && beat.checklist.length)) { %>
+          <div class="small">Add prompts/questions as checklist items</div>
+        <% } %>
+      </div>
+    </div>
+    <div>
+      <div class="section-title">Tech Setup</div>
+      <div class="kv">
+        <div>Camera</div><div><%= (beat.camera && beat.camera.coverage) || '-' %></div>
+        <div>Lenses</div><div><%= (beat.camera && beat.camera.lenses && beat.camera.lenses.join(', ')) || '-' %></div>
+        <div>Move</div><div><%= (beat.camera && beat.camera.move) || '-' %></div>
+        <div>Mics</div><div><%= (beat.sound && beat.sound.mics && beat.sound.mics.join(', ')) || '-' %></div>
+      </div>
+      <hr/>
+      <div class="section-title">B-Roll / Cutaways</div>
+      <div class="list">
+        <% (beat.shots || []).forEach(function(s){ %>
+          <div class="small"><strong><%= s.id %></strong> — <%= s.type || '-' %> • <%= s.lens ? s.lens + 'mm' : '-' %> • <%= s.move || '-' %> • <%= s.status %> • <%= s.est || 0 %>m</div>
+        <% }) %>
+        <% if (!beat.shots || !beat.shots.length) { %>
+          <div class="small">No shots</div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="links">
+      <% if (beat.links && beat.links.drive) { %><a class="link" href="<%= beat.links.drive %>">Drive</a><% } %>
+      <% if (beat.links && beat.links.floorplan) { %><a class="link" href="<%= beat.links.floorplan %>">Floorplan</a><% } %>
+    </div>
+    <% if (beat.qrDataUrl) { %>
+      <img class="qr" src="<%= beat.qrDataUrl %>" alt="QR"/>
+    <% } %>
+  </div>
+</div>

@@ -1,0 +1,104 @@
+@page {
+  size: A5 portrait;
+  margin: 8mm;
+}
+
+:root {
+  --bg: #ffffff;
+  --fg: #0f172a;
+  --muted: #475569;
+  --accent: #0ea5e9;
+  --danger: #ef4444;
+  --ready: #16a34a;
+  --border: #e2e8f0;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji';
+  color: var(--fg);
+  background: var(--bg);
+  margin: 0;
+}
+
+.wrapper {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10mm;
+}
+
+.card {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6mm;
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  gap: 3mm;
+  break-inside: avoid;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4mm;
+}
+
+.header .title {
+  font-weight: 700;
+  font-size: 12pt;
+}
+
+.header .meta {
+  display: flex;
+  gap: 3mm;
+  flex-wrap: wrap;
+  font-size: 9pt;
+  color: var(--muted);
+}
+
+.pills { display: flex; gap: 2mm; flex-wrap: wrap; }
+.pill { border: 1px solid var(--border); border-radius: 999px; padding: 1mm 2.5mm; font-size: 8pt; color: var(--muted); }
+
+.progress {
+  display: flex; gap: 6mm; font-size: 9pt;
+}
+.progress .ok { color: var(--ready); font-weight: 600; }
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4mm;
+}
+
+.section-title { font-weight: 700; font-size: 9.5pt; margin-bottom: 1mm; }
+.small { font-size: 8.5pt; color: var(--muted); }
+.list { display: flex; flex-direction: column; gap: 1mm; }
+.kv { display: grid; grid-template-columns: 24mm 1fr; gap: 1mm 2mm; font-size: 8.5pt; }
+
+.footer { display: flex; justify-content: space-between; align-items: center; gap: 3mm; }
+.links { display: flex; gap: 3mm; flex-wrap: wrap; }
+.link { font-size: 8.5pt; color: var(--accent); text-decoration: none; }
+.qr { width: 22mm; height: 22mm; border: 1px solid var(--border); }
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 2mm;
+  padding: 1mm 3mm;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  font-size: 8pt;
+}
+.status.ready { border-color: var(--ready); color: var(--ready); }
+.status.blocked { border-color: var(--danger); color: var(--danger); }
+
+hr { border: none; border-top: 1px solid var(--border); margin: 2mm 0; }
+
+@media print {
+  .page-break { break-after: page; }
+}
+
+/* Size overrides from inline style in layout when not A5 */

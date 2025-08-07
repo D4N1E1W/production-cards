@@ -1,0 +1,6 @@
+Shot ID,Beat ID,Type,Lens,Movement,Est mins,Status
+12A,B-001,MS,35,static,4,done
+12B,B-001,OTS,50,dolly,6,doing
+12C,B-001,CU,50,dolly,5,todo
+21A,B-002,WS,24,handheld,8,todo
+21B,B-002,MS,35,handheld,10,todo

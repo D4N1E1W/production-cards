@@ -1,0 +1,31 @@
+{
+  "name": "beat-card-deck",
+  "version": "1.0.0",
+  "description": "Generate print-ready production beat cards from CSV/JSON.",
+  "type": "commonjs",
+  "bin": {
+    "beat-cards": "bin/beat-cards.js"
+  },
+  "scripts": {
+    "generate:sample": "node bin/beat-cards.js generate --beats data/beats.sample.csv --shots data/shots.sample.csv --out dist --pdf true --page A5",
+    "validate:sample": "node bin/beat-cards.js validate --beats data/beats.sample.csv --shots data/shots.sample.csv"
+  },
+  "keywords": [
+    "production",
+    "cards",
+    "clickup",
+    "beats",
+    "shotlist"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "csv-parse": "^5.5.6",
+    "dayjs": "^1.11.13",
+    "ejs": "^3.1.10",
+    "puppeteer": "^23.7.3",
+    "qrcode": "^1.5.3",
+    "yargs": "^17.7.2"
+  }
+}
